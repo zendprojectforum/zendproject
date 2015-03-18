@@ -13,6 +13,21 @@ class ReplyController extends Zend_Controller_Action
         // action body
     }
 
+    public function getrepliesAction()
+    {
+           
+        if($this->_request->isGet()){
 
+           $id = $this->_request->getParam('id');
+           $replies = new Application_Model_Reply;
+           $reps = $replies->getReplies($id); 
+           $this->view->replies = $reps;
+
+           
+        }
+
+    }
 }
+
+
 

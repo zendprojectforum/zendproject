@@ -1,0 +1,44 @@
+
+    
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+ <br /><br />
+<div id="view-content">
+	<p>View script for controller <b>Thread</b> and script/action name <b>showThread</b></p>
+        
+<?php        
+        echo "<div style='border:solid 2px; padding:20px;' id = 'thread' > ".$this->thread['body']."</div>";
+        
+        
+        $i = 0;
+        echo "<div id = 'replies' style='border:solid 1px; margin:70px; padding:20px;'>";
+        foreach ($this->replies as $reply){
+            
+            echo "<br><br>Posted by: ".$this->users[$i][1];  //username
+            echo "<img src='".$this->users[$i][2]."' >";  //image
+            echo $reply['date'];
+            echo "<br>".$reply['body'];
+            echo "<button id='edit'>Edit</button>";
+            echo "<button class='edit'onclick='delete()'>Delete</button>";
+            
+            $i++;
+            
+            
+        }
+        echo $this->addReply;
+        echo "</div>";
+        
+?>
+</div>
+
+
+<script>
+    //"zend_project/public/reply/getreplies/id/1"
+    alert(location.pathname); 
+    $("#edit").click(function(){
+    alert("there");
+    $.ajax({url: "/zend_project/public/reply/getreplies/id/1", success: function(result){
+        alert("herrre");
+        $("#replies").html(result);
+    }});
+}); 
+</script>
