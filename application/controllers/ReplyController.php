@@ -43,10 +43,8 @@ class ReplyController extends Zend_Controller_Action
                //get reply
                unset($reply['body']);
                $reply['Date'] = 'max(Date)';
-               //var_dump($reply);
                $lastReply = $rep_model->getLastReply($reply);
                echo json_encode($lastReply[0]);
-               
                
                exit;
                

@@ -5,7 +5,21 @@ class ThreadController extends Zend_Controller_Action
 
     public function init()
     {
+         
         /* Initialize action controller here */
+    }
+    
+    protected function javascriptHelper($caller){
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+         $file_uri = 'media/js/' . $request->getControllerName() . '/' . $request->getActionName() . '.js';
+  echo "ckd";
+        if (file_exists($file_uri)) {
+            echo "ooooooooooook";
+            $viewName= $request->getActionName();
+            $view = $this->load->view($viewName);
+            //$view->headScript()->appendFile('/' . $file_uri);
+        
+        }
     }
     
    
@@ -16,8 +30,8 @@ class ThreadController extends Zend_Controller_Action
 
     public function showthreadAction()
     {     
-        $userId = 1;
-     
+       
+       $userId = 1;
            
        if($this->_request->isGet()) {
            
@@ -57,7 +71,32 @@ class ThreadController extends Zend_Controller_Action
        }
     }
     
-    
+    //called by AJAX
+    public function updatethreadAction(){
+ 
+        if ($this->_request->isPost()){
+           $data['threadTitle']= $this->_request->getParam('title'); 
+           $data['body']= $this->_request->getParam('body'); 
+           $cond='threadId= '.$this->_request->getParam('id');
+           $thr_model = new Application_Model_Thread();
+           $thr_model->updateThread($data, $cond);
+           exit;
+
+        }
+
+   }
+
+    public function deletethreadAction(){
+
+            if ($this->_request->isPost()){
+                       
+               $cond='threadId= '.$this->_request->getParam('id');
+               $thr_model = new Application_Model_Thread();
+               $thr_model->deleteThread($cond);
+               exit;
+              
+            }
+       }
     
     
 }

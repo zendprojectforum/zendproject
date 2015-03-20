@@ -1,5 +1,6 @@
 
-<style> .reply {
+<style> 
+    .reply {
         border: 2px solid;
         margin: 10px;
         padding: 20px;
@@ -13,14 +14,19 @@
     
     #replies{
         margin:70px; 
-        padding:20px;'
+        padding:20px;
     }
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://localhost/zend_project/public/media/js/thread/showthread.js" ></script>
 
-
-
-
+  <?php  
+ //$x = getcwd ();
+ //$this->HeadScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js','text/javascript');
+ //$this->HeadScript()->appendFile($x.'/js/showThread.js','text/javascript');
+ //$this->inlineScript()->appendFile($this->baseUrl($x.'js/showThread.js'));
+ // $this->HeadScript()->appendFile('http://localhost/zend_project/public/js/showThread.js','text/javascript');
+?>
 
 
 <br /><br />
@@ -28,9 +34,17 @@
 
     <?php
     //display thread
-    echo "<div  id = 'thread' > " . $this->thread['body'] . "</div>";
-    echo "<br/> <button onclick='editThread(this)'>Edit</button>";
-    echo "<button onclick='deleteThread(this)'>Delete</button></div>";
+echo "<div  id = 'thread'  > "
+ ."<br><br>Posted by: " . "myusername"  
+ ."<img src= >" 
+ . $this->thread['date'] . "<br/>" 
+ ."<h1>" . $this->thread['threadTitle'] . "</h1>" 
+ ."<p>" . $this->thread['body'] . "</p>" 
+ ."<button name='" . $this->thread['threadId'] . "' onclick='editThread(this)'>Edit</button>" 
+ ."<button  name='" . $this->thread['threadId'] . "' onclick='deleteThread(this)'>Delete</button></div>";
+/* echo "<div  id = 'thread'  > <p>" . $this->thread['body'] ."</p>";
+  echo "<br/> <button id ='".$this->thread['threadId']."' onclick='editThread(this)'>Edit</button>";
+  echo "<button id ='".$this->thread['threadId']."' onclick='deleteThread(this)'>Delete</button></div>"; */
 
     
     
@@ -57,147 +71,8 @@
 
 
 <!-- add reply -->
-<textarea id="replyText" cols="50" rows="10" placeholder="Add reply..." ></textarea>
+<textarea class="replyText" cols="50" rows="10" placeholder="Add reply..." ></textarea>
 <button  onclick="reply(<?php echo $this->id ?>)" type="submit">Reply</button>
 
 
-<script>
 
-    /*
-     * This function is used when adding new comment
-     */
-    function reply(threadId) {
-
-        //clear textarea
-        var textElm = document.getElementById("replyText");
-        var text = textElm.value;
-        textElm.value = '';
-
-        //ajax request
-        $.post("/zend_project/public/reply/savereply",
-                {
-                    thread_id: threadId,
-                    body: text
-                },
-        function (data, status) {
-            var reply = jQuery.parseJSON(data);
-            $("#replies").append("<div id='" + reply['replyId'] + "'" + " class='reply' >" +
-                    "<br><br>Posted by: " + "myusername" + //username
-                    "<img src= >" + //image
-                    reply['Date'] + "<br/>" +
-                    "<p>"+ reply['body'] +"</p>" + // echo "<br>".$reply['body'];
-                    "<button onclick='edit(this)'>Edit</button>" +
-                    "<button onclick='deleteReply(this)'>Delete</button></div>"
-
-                    );
-        });
-    }
-
-
-
-
-    //alert(location.pathname); 
-
-    //on edit
-    function edit(elem) {
-        alert("there");
-
-        var parDiv = elem.closest('div'); // this gets the closest div parent
-
-        var repId = parDiv.id; // this gets the parent classes.
-        console.log(repId);
-
-        //get paragraph inside div
-        var str = "#" + repId + ">p";
-        var text = $(str).text();
-
-        var textElm = document.getElementById("replyText").cloneNode();
-        parDiv.innerHTML = '';
-        textElm.innerHTML = text;
-        parDiv.appendChild(textElm);
-        parDiv.innerHTML += "<button onclick='editReply(this)' >Edit</button>";
-    }
-
-
-    function editReply(elm) {    //update reply with ajax
-
-        var newReply = elm.previousSibling.value;
-        var parDiv = elm.closest('div'); // this gets the closest div parent
-        var repId = parDiv.id; // this gets the parent classes.
-
-        //ajax request
-        $.post("/zend_project/public/reply/updatereply",
-                {
-                    id: repId,
-                    body: newReply
-                },
-        function (data, status) {
-
-            parDiv.innerHTML =  "<br><br>Posted by: " + "myusername" + //username
-                    "<img src= >" + //image
-                    "<label> Edited </label>" +
-                    getCurrentDATETIME() + "<br/>" +
-                    "<p>" + newReply + "</p>" +
-                    "<button onclick='edit(this)'>Edit</button>" +
-                    "<button onclick='deleteReply(this)'>Delete</button>";
-        });
-    }
-    
-    
-    function deleteReply(elm){
-    
-        alert("here");
-    
-        var parDiv = elm.closest('div'); // this gets the closest div parent
-        var repId = parDiv.id; // this gets the parent classes.
-
-        //ajax request
-        $.post("/zend_project/public/reply/deletereply",
-                {
-                    id: repId,
-                },
-        function (data, status) {
-            
-            parDiv.remove();
-        });
-
-    }
-
-
-    function getCurrentDATETIME() {
-
-        var currentdate = new Date();
-
-        var month = currentdate.getMonth() + 1;
-        if (month < 10)
-            month = "0" + month;
-
-        var day = currentdate.getDate();
-        if (day < 10)
-            day = "0" + day;
-
-        var min = currentdate.getMinutes();
-        if (min < 10)
-            min = "0" + min;
-
-        var second = currentdate.getSeconds();
-        if (second < 10)
-            second = "0" + second;
-
-        var hour = currentdate.getHours();
-        if (hour < 10)
-            hour = "0" + hour;
-
-
-        var datetime = currentdate.getFullYear() + "-"
-                + month + "-"
-                + day + " "
-                + hour + ":"
-                + min + ":"
-                + second;
-
-
-        return datetime;
-
-    }
-</script>

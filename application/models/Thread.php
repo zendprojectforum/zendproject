@@ -8,10 +8,18 @@ class Application_Model_Thread  extends Zend_Db_Table_Abstract
     
     function getThreadById($id){
         
-        return $this->find($id)->toArray();
-       
+        return $this->find($id)->toArray();     
     }
     
+     function updateThread($data , $where){
+        return $this->update($data, $where);
+        
+    }
+    
+      function deleteThread($cond){      
+       return  $this->delete($cond);
+
+    }
     
      
 
