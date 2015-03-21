@@ -1,0 +1,32 @@
+
+<br /><br />
+<div id="view-content">
+	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
+</div>
+
+<
+
+<?php
+//$this->form->setAction($this->url());
+?>
+
+
+<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+    
+    <tbody>
+            <?php $i=0;
+            $threads=$this->posts;
+            foreach ($threads  as $thread) { ?>
+            <tr>
+            <?php foreach ($thread  as $element) { ?>
+            <td>
+            <?php echo $element.'&nbsp;';?>
+            </td>        
+            
+            <?php }?>
+     
+            </tr>    
+            <?php  $i=$i+1; }?>                            
+    </tbody>
+</table>
+
