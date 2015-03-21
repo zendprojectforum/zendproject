@@ -1,0 +1,53 @@
+<br /><br />
+<div id="view-content">
+	<p>View script for controller <b>User</b> and script/action name <b>listusers</b></p>
+</div>
+
+
+<script src="http://localhost/zend_project/public/media/jquery/ajax.googleapis.jquery.min.js"></script>
+<script src="http://localhost/zend_project/public/media/js/user/listusers.js" ></script>
+
+
+<?php
+
+
+    
+     echo "<table>";
+     
+     echo "<th>ID</th><th>Username</th><th>Password</th><th>Email</th><th>Gender</th><th>Status</th>"
+     . "<th>Country</th><th>Signature</th><th>Action</th>";
+     
+    foreach ($this->users as $user){
+        
+        echo "<tr id='".$user['id']."' >";
+        echo "<td> ".$user['id'] ."</td>";
+        echo "<td> ".$user['username'] ."</td>";
+        echo "<td> ".$user['password'] ."</td>";
+        echo "<td> ".$user['email'] ."</td>";
+
+        echo "<td> ".$user['gender'] ."</td>";
+        echo "<td> ".$user['status'] ."</td>";
+        echo "<td> ".$user['country'] ."</td>";
+        echo "<td><img src='".$user['signature'] ."' ></td>";
+        echo "<td><button onclick='deleteUser(this)' >Delete</button>";
+
+        
+        
+        if ($user['isAdmin'])
+            echo "<button>Edit</button><button onclick='makeAdmin(this)'>Make normal user</button>";
+        else
+            
+            echo "<button>Edit</button><button onclick='makeAdmin(this)'>Make admin</button>";
+        
+        
+        if (!$user['isBan'] && !$user['isAdmin'])
+            echo "<button onclick='ban(this)'>Ban user</button>";
+        elseif  (!$user['isAdmin'])
+            echo "<button onclick='ban(this)'>Unban user</button>";
+        echo "</td></tr>";
+      
+    }
+    echo "</table";
+
+
+?>
