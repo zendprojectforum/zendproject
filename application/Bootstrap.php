@@ -19,6 +19,35 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 //Do something with exception
             }
         }
+        
+        protected function _initSession(){
+            //$action = $this->getRequest()->getActionName();
+            $this->user2;
+            $authorization =Zend_Auth::getInstance();
+             if(!$authorization->hasIdentity()) {
+             
+               //if (!($action == "login"))
+                 //     $this->redirect("user/login");
+             }
+             /*else {
+               //if (($action == "login" ) || ($action == "add" ) ){
+                 //     $this->redirect("article/list");
+               }*/
+               else
+               {
+                $info = $authorization->getIdentity ();
+                $this->myinfo = $info;
+                $name = $info->username ;
+                  // echo "welcome $name";
+               }
+
+             
+        
+            
+        }
+
+        
+         var $myinfo ;
 
 }
 

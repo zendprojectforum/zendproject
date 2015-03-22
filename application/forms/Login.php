@@ -21,23 +21,10 @@ class Application_Form_Login extends Zend_Form {
 
 
 
-/******************************/
-        $wd = getcwd();
-        $destination = APPLICATION_PATH;
-        //exit;
-        $image = new Zend_Form_Element_File('image');
-        $image->setLabel('Upload an image:')
-                ->setDestination("public/media/images")
-                ->setRequired(true)
-                ->setMaxFileSize(10240000) // limits the filesize on the client side
-                ->setDescription('Click Browse and click on the image file you would like to upload');
-        $image->addValidator('Count', false, 1);                // ensure only 1 file
-        $image->addValidator('Size', false, 10240000);            // limit to 10 meg
-        $image->addValidator('Extension', false, 'jpg,jpeg,png,gif'); // only JPEG, PNG, an
 
-/********************************************************/
+       
         $submit = new Zend_Form_Element_Submit("submit");
-        $this->addElements(array($email, $password,$image, $submit));
+        $this->addElements(array($email, $password, $submit));
     }
 
 }

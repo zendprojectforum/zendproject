@@ -1,0 +1,18 @@
+<style>
+    img{
+        width:140px;
+        height:140px;
+    }
+</style>
+
+
+<br /><br />
+<div id="view-content">
+        <?php if($this->message)
+            echo "<p> <b> ".$this->message ."</b></p></div>"; 
+	?>
+<?php
+
+echo $this->form;
+echo "<img src ='/zend_project/public/media/images/".$this->image."' >";
+?>

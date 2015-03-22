@@ -1,22 +1,16 @@
 <?php
 
-class UserController extends Zend_Controller_Action
-{
+class UserController extends Zend_Controller_Action {
 
-    public function init()
-    {
+    public function init() {
         /* Initialize action controller here */
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         // action body
-    
-        
     }
 
-    public function loginAction()
-    {
+    public function loginAction() {
         $form = new Application_Form_Login();
         if ($this->_request->isPost()) {
 
@@ -30,37 +24,16 @@ class UserController extends Zend_Controller_Action
                 $password = $form->getValue('password');
 
                 $authAdapter->setIdentity($email);
-                //$authAdapter->setCredential(md5($password));
-                $authAdapter->setCredential($password); //*********//
+                $authAdapter->setCredential(md5($password));
+                
                 //authenticate
                 $result = $authAdapter->authenticate();
-                //echo $result;
+                
                 if ($result->isValid()) {
-
                     $auth = Zend_Auth::getInstance();
                     $storage = $auth->getStorage();
-                    $storage->write($authAdapter->getResultRowObject(array('email', 'id', 'name')));
-                    //$this->redirect("thread/showthread/id/1");
-
-
-
-
-
-                    /*****************************************************************/
-                  /*  if ($form->image->isUploaded()) {
-                        $source = $form->image->getFileName();
-                        echo $source;
-                        exit;
-                        //to re-name the image, all you need to do is save it with a new name, instead of the name they uploaded it with. Normally, I use the primary key of the database row where I'm storing the name of the image. For example, if it's an image of Person 1, I call it 1.jpg. The important thing is that you make sure the image name will be unique in whatever directory you save it to.
-
-                        $new_image_name = 'someNameYouInvent.jpg';
-
-                        //save image to database and filesystem here
-                        $image_saved = move_uploaded_file($source, 'media/images/' . $new_image_name);
-                        if ($image_saved) {
-                          echo "ok";
-                        }
-                    }*/
+                    $storage->write($authAdapter->getResultRowObject(array('id', 'username', 'signature', 'isAdmin', 'isBan')));
+                    $this->redirect("thread/showthread/id/1");
                 } else {
                     echo "not auth";
                     $message = "Invalid username or password";
@@ -72,67 +45,101 @@ class UserController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    public function registerAction()
-    {
+    public function registerAction() {
         $form = new Application_Form_User();
         if ($this->_request->isPost()) {
             if ($form->isValid($this->_request->getParams())) {
                 $user_info = $form->getValues();
-                $user_model = new Application_Model_User();
-                $user_model->addUser($user_info);
+
+                //rename image by user id
+                $user_mdl = new Application_Model_User;
+                $id = (reset($user_mdl->getLastId()[0])) + 1; //get first value of array
+                $source = $form->signature->getFileName();
+                $ext = "." . pathinfo($source)['extension'];
+                $destination = "media/images/" . $id . $ext;
+                chmod($source, 0777);
+                rename($source, $destination);
+                $user_info['signature'] = "$id$ext";
+                unset($user_info['confirm_pswd']);
+                var_dump($user_info);
+                $user_mdl->addUser($user_info);
+                
+                
             }
         }
 
         $this->view->form = $form;
     }
 
-    
-    
-    public function listusersAction()
-    {
+    public function listusersAction() {
         $user_model = new Application_Model_User;
-        $users  = $user_model->getUsers();
+        $users = $user_model->getUsers();
         $this->view->users = $users;
-        
     }
     
-    public function banAction(){
-        if ($this->_request->isPost()){
-           $data['isBan']= $this->_request->getParam('status'); 
-           $cond='id= '.$this->_request->getParam('id');
-           $user_model = new Application_Model_User;
-           $user_model->ban($data , $cond);
-           exit;
 
+    public function banAction() {
+        if ($this->_request->isPost()) {
+            $data['isBan'] = $this->_request->getParam('status');
+            $cond = 'id= ' . $this->_request->getParam('id');
+            $user_model = new Application_Model_User;
+            $user_model->ban($data, $cond);
+            exit;
         }
-        
     }
-    
-     public function makeadminAction(){
-        if ($this->_request->isPost()){
-           $data['isAdmin']= $this->_request->getParam('status'); 
-           $cond='id= '.$this->_request->getParam('id');
-           $user_model = new Application_Model_User;
-           $user_model->admin($data , $cond);
-           exit;
 
+    public function makeadminAction() {
+        if ($this->_request->isPost()) {
+            $data['isAdmin'] = $this->_request->getParam('status');
+            $cond = 'id= ' . $this->_request->getParam('id');
+            $user_model = new Application_Model_User;
+            $user_model->admin($data, $cond);
+            exit;
         }
-     }
-        
-    public function deleteuserAction(){
-        if ($this->_request->isPost()){
-           $cond='id= '.$this->_request->getParam('id');
-           $user_model = new Application_Model_User;
-           $user_model->deleteUser($cond);
-           exit;
-
-        }
-        
     }
+
+    public function editAction() {
         
+        $id = ($this->_request->getParam('id'));
+        echo $id;
+        if (!empty($id)){
+        $form = new Application_Form_User();
+        if ($this->_request->isPost()) {
+            if ($form->isValid($this->_request->getParams())) {
+                $user_info = $form->getValues();
+                $user_model = new Application_Model_User();
+                $user_model->editUser($user_info);
+                $this->view->message= "user updated successfully";
+            }
+        }
+            
+            $user_model = new Application_Model_User();
+            $user = $user_model->getUserById($id);
+            var_dump($user);
+
+            
+            $form->getElement("password")->setRequired(false);
+            $email = $form->getElement("email");
+            $email->removeValidator('Db_NoRecordExists');
+            
+            $form->populate($user[0]);
+            $this->view->form = $form;
+            $this->view->image = $user[0]['signature'];
+        }
+        else {
+	$this->render('error');
+ 
+        }
+       
+    }
+
+    public function deleteuserAction() {
+        if ($this->_request->isPost()) {
+            $cond = 'id= ' . $this->_request->getParam('id');
+            $user_model = new Application_Model_User;
+            $user_model->deleteUser($cond);
+            exit;
+        }
+    }
+
 }
-
-
-
-
-

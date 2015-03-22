@@ -31,7 +31,11 @@ class ReplyController extends Zend_Controller_Action
  
        if ($this->_request->isPost()){
            
-               $userId = 1;
+               //$userId = 1;
+               $front = Zend_Controller_Front::getInstance();
+               $bootstrap = $front->getParam("bootstrap");
+               $userId = $bootstrap->myinfo->id;
+               
             
                $reply['body']= $this->_request->getParam('body');
                //$id = $this->_request->getParam('id');

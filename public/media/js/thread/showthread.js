@@ -1,13 +1,14 @@
-alert("here");
-alert(location.pathname);
+//alert("here");
+//alert(location.pathname);
 
 
 /*
  * This function is used when adding new comment
  */
-function reply(threadId) {
+function reply(threadId, username , image) {
 
     //clear textarea
+    alert("here");
     var textElm = document.getElementsByClassName("replyText")[0];
     var text = textElm.value;
     textElm.value = '';
@@ -21,8 +22,8 @@ function reply(threadId) {
     function (data, status) {
         var reply = jQuery.parseJSON(data);
         $("#replies").append("<div id='" + reply['replyId'] + "'" + " class='reply' >" +
-                "<br><br>Posted by: " + "myusername" + //username
-                "<img src= >" + //image
+                "<br><br>Posted by: " + username + //username
+                "<img src='"+image+"' >" + //image
                 reply['Date'] + "<br/>" +
                 "<p>" + reply['body'] + "</p>" + // echo "<br>".$reply['body'];
                 "<button onclick='edit(this)'>Edit</button>" +
@@ -47,17 +48,29 @@ function edit(elem) {
 
     //get paragraph inside div
     var str = "#" + repId + ">p";
-    var text = $(str).text();
+    var text =$(str).text();
+    
+    str = "#" + repId + ">img";
+    var img = "'" + $(str)[0].src+"'";
+    
+    var str = "#" + repId + ">label";
+    console.log ($(str));
+    var name = "'"+ $(str)[0].innerHTML+"'";
+    
+    
 
     var textElm = document.getElementsByClassName("replyText")[0].cloneNode();
     parDiv.innerHTML = '';
     textElm.innerHTML = text;
     parDiv.appendChild(textElm);
-    parDiv.innerHTML += "<button onclick='editReply(this)' >Edit</button>";
+    var funcString  = "editReply(this,"+ img+","+name+")";
+    alert(funcString);
+    
+    parDiv.innerHTML += "<button onclick=\""+funcString+"\" >Edit</button>";
 }
 
 
-function editReply(elm) {    //update reply with ajax
+function editReply(elm , img , name) {    //update reply with ajax
 
     var newReply = elm.previousSibling.value;
     var parDiv = elm.closest('div'); // this gets the closest div parent
@@ -71,8 +84,8 @@ function editReply(elm) {    //update reply with ajax
             },
     function (data, status) {
 
-        parDiv.innerHTML = "<br><br>Posted by: " + "myusername" + //username
-                "<img src= >" + //image
+        parDiv.innerHTML = "<br><br>Posted by: <label>" + name +"</label> "+ //username
+                "<img src="+img+" >" + //image
                 "<label> Edited </label>" +
                 getCurrentDATETIME() + "<br/>" +
                 "<p>" + newReply + "</p>" +
@@ -141,18 +154,21 @@ function getCurrentDATETIME() {
 
 
 //------------------------------------------------------------------------------
-function editThread(elem) {
+function editThread(elem,username , imgsrc) {
 
     var parDiv = $("#thread")[0];
 
 
     var textArea = document.getElementsByClassName("replyText")[0];
     var titleElm = textArea.cloneNode();
+    titleElm.placeholder ='Add title..';
     titleElm.rows = "1";
     titleElm.innerHTML = $('#thread > h1').text();
 
 
     var textElm = textArea.cloneNode();
+    textElm.placeholder ='Add thread body..';
+
     textElm.cols = "70";
 
     textElm.innerHTML = $('#thread > p').text();
@@ -163,12 +179,14 @@ function editThread(elem) {
     parDiv.innerHTML += '<br/>';
 
     parDiv.appendChild(textElm);
-    parDiv.innerHTML += "<button id='" + elem.name + "' onclick='editThreadAjax(this)' >Edit</button>";
+    var funcString  = "editThreadAjax(this,\""+ username+"\",\""+imgsrc+"\")";
+
+    parDiv.innerHTML += "<button id='" + elem.name + "' onclick='"+funcString+"' >Edit</button>";
 
 
 }
 
-function editThreadAjax(elm) {
+function editThreadAjax(elm, username , imgsrc) {
 
     alert("ok");
     var elms = document.getElementsByTagName("textarea");
@@ -190,17 +208,17 @@ function editThreadAjax(elm) {
         url: "/zend_project/public/thread/updatethread",
         data: data,
         success: function (msg) {
-            parDiv.innerHTML = "<br><br>Posted by: " + "myusername" + //username
-                    "<img src= >" + //image
+            var funcString  = "editThread(this,\""+ username+"\",\""+imgsrc+"\")";
+            parDiv.innerHTML = "<br><br>Posted by: <label>" + username +"</label>"+ //username
+                    "<img src='"+imgsrc+"' >" + //image
                     getCurrentDATETIME() + "<br/>" +
                     "<h1>" + threadTitle + "</h1>" +
                     "<p>" + newThread + "</p>" +
-                    "<button name='" + threadId + "' onclick='editThread(this)'>Edit</button>" +
+                    "<button name='" + threadId + "' onclick='"+funcString+"'>Edit</button>" +
                     "<button  name='" + threadId + "' onclick='deleteThread(this)'>Delete</button>";
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             parDiv.innerHTML = "An error occurred, please try again later.";
-            //alert(XMLHttpRequest.responseText);
         }
     });
 
@@ -217,7 +235,7 @@ function deleteThread(elm) {
     //ajax request
     $.post("/zend_project/public/thread/deletethread",
             {
-                id: thrId,
+                id: thrId
             },
             function (data, status) {
 

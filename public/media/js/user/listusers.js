@@ -15,11 +15,13 @@ function ban(elm){
             },
     function (data, status) {
 
-    if (ban==1) 
-        elm.innerHTML='Unban user';
-    else
-        elm.innerHTML='Ban user';
-
+        if (ban==1){
+            elm.innerHTML='Unban user';
+            elm.className="btn btn-lg btn-success";
+        }else{
+            elm.innerHTML='Ban user';
+            elm.className="btn btn-lg btn-danger";
+        }
     });
     
 }
@@ -71,24 +73,16 @@ function deleteUser(elm){
         parentRow.remove();
     });
     
-    /*data = "id=" + id;
-    $.ajax({
-        type: "POST",
-        url: "/zend_project/public/user/delete",
-        data: data,
-        success: function (msg) {
-                    //parentRow.remove();
-                    alert ("ok");
-
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            
-            alert ("kkkkk");
-            alert(XMLHttpRequest.responseText);
-        }
-    });*/
-
     
 }
 
-
+function Edit(elm){
+    alert ("here") ;
+    
+    var loc = window.location.href;
+    var n = loc.lastIndexOf('/');
+    loc = loc.substring(0 ,n);
+    var id = elm.parentNode.parentNode.id;
+    window.location.href = loc+ "/edit/id/"+id;
+    
+ };

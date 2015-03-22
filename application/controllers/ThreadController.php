@@ -9,7 +9,7 @@ class ThreadController extends Zend_Controller_Action
         /* Initialize action controller here */
     }
     
-    protected function javascriptHelper($caller){
+   /* protected function javascriptHelper($caller){
     $request = Zend_Controller_Front::getInstance()->getRequest();
          $file_uri = 'media/js/' . $request->getControllerName() . '/' . $request->getActionName() . '.js';
   echo "ckd";
@@ -21,7 +21,7 @@ class ThreadController extends Zend_Controller_Action
         
         }
     }
-    
+    */
    
     public function indexAction()
     {
@@ -31,8 +31,10 @@ class ThreadController extends Zend_Controller_Action
     public function showthreadAction()
     {     
        
-       $userId = 1;
-           
+       $front = Zend_Controller_Front::getInstance();
+       $bootstrap = $front->getParam("bootstrap");
+            
+       
        if($this->_request->isGet()) {
            
            $id = $this->_request->getParam('id'); //getParam search in user params first
@@ -41,24 +43,32 @@ class ThreadController extends Zend_Controller_Action
                 $thread  = new Application_Model_Thread();
                 $replies = new Application_Model_Reply;
                 $users = new Application_Model_User;
-                //$addReply = new Application_Form_Reply;      
 
                 $result = $thread->getThreadById($id);
                 $reps = $replies->getReplies($id);
                 $this->view->thread = $result[0];
                 $this->view->replies = $reps;
                 $this->view->id = $id;
-
-
+                
+                
+              
+                
+                $thuser =  $users->getUserById($result[0]['user_id'])[0];
+                $threadUser = array ($thuser['id'] , $thuser['username'] , $thuser['signature']);
+                
                 $replyUsers = array();
                 foreach ($reps as $reply){
-                    //echo $reply['user_id']."pppp";
                     $user = $users->getUserById($reply['user_id'])[0];
-                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature']);
+                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan']);
                  }
 
                 $this->view->users = $replyUsers;
-                //$this->view->addReply = $addReply;
+                $this->view->myInfo = $bootstrap->myinfo;
+                $this->view->threadUser = $threadUser;
+                
+
+                
+                
            }
            
        
