@@ -5,7 +5,15 @@ class Application_Model_User extends Zend_Db_Table_Abstract
 
     protected $_name = "user";  //table name in database
 
+    
+    
+    
      
+    function getLastId(){
+        $select= $this->select()
+            ->from($this,array('max(id)')); // you could also include the 'as' statement in the field name to make it look like 'id as otherName'
+        return $this->fetchAll($select)->toArray();
+    }
     
     function getUserById($id){  
        
@@ -18,6 +26,15 @@ class Application_Model_User extends Zend_Db_Table_Abstract
        
     }
     
+    function editUser($data){
+        if(!empty($data['password'])){
+            $data['password']=md5($data['password']);
+        }
+     
+        $this->update($data, "id=".$data['id']);
+        return $this->fetchAll()->toArray();
+    }
+    
     function ban($data , $where){
         return $this->update($data, $where);
         
@@ -27,6 +44,14 @@ class Application_Model_User extends Zend_Db_Table_Abstract
         return $this->update($data, $where);
         
     }
+    
+     function addUser($data){
+         
+        $data['password'] = md5 ($data['password']);
+        return $this->insert($data);
+        
+    }
+    
     
     function deleteUser($cond){        
         return $this->delete($cond);
