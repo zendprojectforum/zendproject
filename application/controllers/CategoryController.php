@@ -15,7 +15,9 @@ class CategoryController extends Zend_Controller_Action
 
     public function getcategoryAction()
     {
-      
+        $front = Zend_Controller_Front::getInstance();
+        $bootstrap = $front->getParam("bootstrap");
+         
         $category_model = new Application_Model_Category();
         $categories=$category_model->listCategories();
         
@@ -32,7 +34,7 @@ class CategoryController extends Zend_Controller_Action
             
         }
         $this->view->forums=$forums;
-        
+        $this->view->myInfo = $bootstrap->myinfo;
     }
     
     public function categorydataAction()
@@ -113,7 +115,7 @@ function editcategoryAction(){
         
       
         $category_model->editcategory($categoryId,trim($categoryName));
-        
+        $this->redirect('/Category/getcategory');   
         } 
 
         }

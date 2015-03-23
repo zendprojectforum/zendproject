@@ -65,7 +65,7 @@ function ajaxlock(url,id){
             
         
         <td <?php echo "id='catName".$category['catId']."'";?>>
-          <?php        echo "<a href=".'http://localhost/zend_project/public/Category/categorydata?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".$category['catName']."</a>" ;
+          <?php echo "<a href=".'http://localhost/zend_project/public/Category/categorydata?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".$category['catName']."</a>" ;
         ?>
         
         </td>
@@ -73,6 +73,8 @@ function ajaxlock(url,id){
              
         <td>
         <?php
+   
+       if($this->myInfo->isAdmin){
 echo "<td>"."<input value='delete' type='button'  id='".$category['catId']."' onclick =ajax('Category/deletecategory?catId=".$category['catId']."') >";  
 echo "</td>"; 
 ?>    
@@ -118,7 +120,7 @@ echo "<a href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.
    
         <?php } ?>
               
-        <?php $i=$i+1; }?>                            
+       <?php $i=$i+1; }}?>                            
     </tbody>
 </table>
 
