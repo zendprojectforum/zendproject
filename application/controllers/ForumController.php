@@ -39,18 +39,35 @@ class ForumController extends Zend_Controller_Action
        $this->view->posts=$posts; 
         
     }
-  
+  public function lockforumAction() {
+      
+       $forumId=$this->_request->getParam('forumId');
+       $forum_model = new Application_Model_Forum();
+       
+       $isLocked= $forum_model-> listspecificforum($forumId);
+       $isLocked=$isLocked[0]["isLocked"];
+       $forum_model = new Application_Model_Forum();
+       $forum_model->lockforum($forumId,!($isLocked));
+       echo (!$isLocked);
+        
+        exit;
+        
+    }
+    
     function addforumAction(){
         $form  = new Application_Form_addforum();
         
         if($this->getRequest()->isPost()){
-            echo $form->isValid($this->getRequest()->getParams());
+          
            if($form->isValid($this->getRequest()->getParams())){
-                
+               
                $form_info = $form->getValues();
-               $form_model = new Application_Model_Category();
+               $form_info ["cat_id"]=$this->_request->getParam('cat_id');
+               $form_info ["isLocked"]=0;
+              
+               $form_model = new Application_Model_Forum();
                $form_model->addforum($form_info);
-                       
+               $this->redirect('/Category/categorydata?categoryId='.$form_info ["cat_id"]);        
            }
      
         
@@ -71,7 +88,15 @@ class ForumController extends Zend_Controller_Action
         echo $forumId;exit;
     }
      
-     
+     function editforumAction(){
+        $forumId=$this->_request->getParam('forumId');
+        $forumName=$this->_request->getParam('forumName');
+    
+        $forum_model = new Application_Model_Forum();
+        $forum_model->editforum($forumId,trim($forumName));
+        echo $forumId; 
+        exit;
+    }   
      
 }
 
