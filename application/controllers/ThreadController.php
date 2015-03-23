@@ -97,7 +97,28 @@ class ThreadController extends Zend_Controller_Action
               
             }
        }
+public function addthreadAction(){
+
+            $form = new Application_Form_addthread();
+
     
+            if($this->getRequest()->isPost()){
+            echo $form->isValid($this->getRequest()->getParams());
+           if($form->isValid($this->getRequest()->getParams())){
+                
+               $thread_info = $form->getValues();
+               $forumId=$this->_request->getParam('forumId');
+               $thread_info["forumId"]=$forumId;
+              
+               $thread_model = new Application_Model_Thread();
+               $thread_model->addthread($thread_info);
+               $this->redirect('/Forum/forumdata?forumId='.$forumId);        
+           }
+     
+        
+        }
+            $this->view->form = $form;
+       }    
     
 }
 

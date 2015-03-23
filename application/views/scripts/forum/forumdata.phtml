@@ -10,20 +10,23 @@
 //$this->form->setAction($this->url());
 ?>
 
-
 <table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
     
     <tbody>
             <?php $i=0;
             $threads=$this->posts;
+            $forumId=$_GET['forumId'];
+            echo "<a href=".'http://localhost/zend_project/public/Thread/addthread?forumId='.$forumId.">add thread</a>";
+        
             foreach ($threads  as $thread) { ?>
             <tr>
-            <?php foreach ($thread  as $element) { ?>
-            <td>
-            <?php echo $element.'&nbsp;';?>
+           <td>
+             <?php echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId']."'>". $thread['threadTitle']."</a>"?>   
+           
+            
             </td>        
             
-            <?php }?>
+            
      
             </tr>    
             <?php  $i=$i+1; }?>                            

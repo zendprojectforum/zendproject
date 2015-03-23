@@ -36,5 +36,20 @@ class Application_Model_Thread  extends Zend_Db_Table_Abstract
         
      }
 
-}
+    function addReply($data){      
+       return  $this->insert($data);
+
+    }
+ function addthread($data){      
+        $row = $this->createRow();
+        $row->body = $data['newthread'];
+        $row->threadTitle = $data['threadtitle'];
+        $row->isLocked = 0;
+        $row->forum_id = $data['forumId'];
+       
+        return $row->save();
+
+    }
+    
+  }
 
