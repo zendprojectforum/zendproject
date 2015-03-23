@@ -52,7 +52,7 @@ class UserController extends Zend_Controller_Action
                     }
                     
                     
-                    $storage->write($authAdapter->getResultRowObject(array('id', 'username', 'signature', 'isAdmin', 'isBan')));
+                    $storage->write($authAdapter->getResultRowObject(array('id', 'username', 'signature', 'isAdmin', 'isBan', 'profpic')));
                     $this->redirect("thread/showthread/id/1");
                 } else {
                     echo "not auth";
@@ -75,12 +75,26 @@ class UserController extends Zend_Controller_Action
                 //rename image by user id
                 $user_mdl = new Application_Model_User;
                 $id = (reset($user_mdl->getLastId()[0])) + 1; //get first value of array
+                
+                
                 $source = $form->signature->getFileName();
                 $ext = "." . pathinfo($source)['extension'];
                 $destination = "media/images/" . $id . $ext;
                 chmod($source, 0777);
                 rename($source, $destination);
                 $user_info['signature'] = "$id$ext";
+                
+                $source = $form->profpic->getFileName();
+                $ext = "." . pathinfo($source)['extension'];
+                $destination = "media/images/" . $id . $ext;
+                chmod($source, 0777);
+                rename($source, $destination);
+                $user_info['profpic'] = "p_$id$ext";
+                
+                
+                
+                
+                
                 unset($user_info['confirm_pswd']);
                 var_dump($user_info);
                 $user_mdl->addUser($user_info);
@@ -134,10 +148,13 @@ class UserController extends Zend_Controller_Action
             
 
             if ($this->_request->isPost()) {                            //save updates
+                exit;
                 if ($form->isValid($this->_request->getParams())) {
                     $user_info = $form->getValues();
                     $user_model = new Application_Model_User();
                     $user_info['id'] = $id;
+                    var_dump($user_info);
+                    exit;
                     $user_model->editUser($user_info);
                     $this->view->message = "user updated successfully";
                 }

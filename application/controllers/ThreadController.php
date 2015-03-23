@@ -54,12 +54,12 @@ class ThreadController extends Zend_Controller_Action
               
                 
                 $thuser =  $users->getUserById($result[0]['user_id'])[0];
-                $threadUser = array ($thuser['id'] , $thuser['username'] , $thuser['signature']);
+                $threadUser = array ($thuser['id'] , $thuser['username'] , $thuser['signature'],$thuser['profpic'] );
                 
                 $replyUsers = array();
                 foreach ($reps as $reply){
                     $user = $users->getUserById($reply['user_id'])[0];
-                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan']);
+                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan'], $user['profpic']);
                  }
 
 

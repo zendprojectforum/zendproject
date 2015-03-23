@@ -63,6 +63,16 @@ class Application_Form_User extends Zend_Form {
             'Widowed' => 'Widowed'
         ));
 
+        
+        @$profpic = new Zend_Form_Element_File('profpic');
+        @$profpic->setLabel('Uploat your profile picture:')
+                        ->setDestination('media/images')
+                        ->setMaxFileSize(10240000)                              // limits the filesize on the client side
+                        ->addValidator('Count', false, 1)                       // ensure only 1 file
+                        ->addValidator('Extension', false, 'jpg,jpeg,png,gif'); // only JPEG, PNG, an
+
+        
+        
         @$signature = new Zend_Form_Element_File('signature');
         @$signature->setLabel('Uploat your signature:')
                         ->setDestination('media/images')
@@ -74,7 +84,7 @@ class Application_Form_User extends Zend_Form {
 
         $submit = new Zend_Form_Element_Submit("submit");
         $submit->setAttrib("class", "btn btn-primary");
-        $this->addElements(array($username, $email, $password, $confirmPswd, $gender, $country, $status, $signature, $submit));
+        $this->addElements(array($username, $email, $password, $confirmPswd, $gender, $country, $status, $profpic, $signature, $submit));
     }
 
 }

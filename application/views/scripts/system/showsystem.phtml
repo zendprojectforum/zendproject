@@ -13,9 +13,9 @@
 <?php
  
 if ($this->status == 0){
-    echo "<td><button onclick='system()'>OFF</button></td>";   
+    echo "<td><button id='".$this->myInfo->id."' onclick='system(this)'>Open System</button></td>";   
 }else{
-    echo "<td><button onclick='system()'>ON</button></td>";   
+    echo "<td><button id='".$this->myInfo->id."'  onclick='system(this)'>Close System</button></td>";   
 }
 
 
