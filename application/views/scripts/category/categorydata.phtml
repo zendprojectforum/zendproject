@@ -1,0 +1,139 @@
+
+<br /><br />
+<div id="view-content">
+	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
+</div>
+
+<?php
+//$this->form->setAction($this->url());
+
+//var_dump($this->categories);
+
+?>
+           
+<script>
+
+        ajaxRequest = new XMLHttpRequest();
+function ajax(url){
+           ajaxRequest.open("GET","http://localhost/zend_project/public/" + url, true);
+           ajaxRequest.send();
+        }
+        ajaxRequest.onreadystatechange = function(){    
+                     
+        if(ajaxRequest.readyState ===4 && ajaxRequest.status===200){
+            response=(ajaxRequest.responseText);
+            document.getElementById('row'+response).parentNode.removeChild(document.getElementById('row'+response));
+         }
+        };
+        
+         ajaxRequestLock = new XMLHttpRequest();
+function ajaxlock(url,id){
+           
+           ajaxRequestLock.open("GET","http://localhost/zend_project/public/" + url, true);
+           ajaxRequestLock.send();
+        
+        ajaxRequestLock.onreadystatechange = function(){    
+                     
+        if(ajaxRequestLock.readyState ===4 && ajaxRequestLock.status===200){
+            response=(ajaxRequestLock.responseText);
+            $lockbtn=document.getElementById('lbtn'+id); 
+            if(response){response="unlock";}
+            else{response="lock"}
+           $lockbtn.setAttribute("value",response);
+            
+        }
+        };
+    }
+    
+ajaxRequestedit = new XMLHttpRequest();
+function editwithajax(url,id,name){
+         
+           $forumNameTd=document.getElementById('forumName'+id);
+           ex=(document.getElementById("btn"+id));
+           if(ex==null){
+           $input=document.createElement("input");
+           $input.setAttribute("type","text");
+           $input.setAttribute("id","input"); 
+           $forumNameTd.appendChild($input);
+           $btn=document.createElement("button");
+           $btn.setAttribute("id","btn"+id);
+           $txt=document.createTextNode("completeEdit");
+           $btn.appendChild($txt);
+           $forumNameTd.appendChild($btn);
+           $btn.addEventListener("click", function(){ 
+           document.getElementById("link."+id).parentNode.removeChild(document.getElementById("link."+id));
+           document.getElementById("input").parentNode.removeChild(document.getElementById("input"));
+           document.getElementById("btn"+id).parentNode.removeChild(document.getElementById("btn"+id));
+           $txt=document.createTextNode($input.value);
+           $link=document.createElement("a");
+           $link.setAttribute("id","link."+id);
+           $link.setAttribute("href",'http://localhost/zend_project/public/Forum/forumdata?forumId='+id);
+           $link.appendChild($txt);
+           $forumNameTd.appendChild($link);
+           ajaxRequestedit.open("GET","http://localhost/zend_project/public/" + url+'&forumName='+$input.value, true);
+           ajaxRequestedit.send();
+           
+           });
+       }
+        ajaxRequestedit.onreadystatechange = function(){    
+        if(ajaxRequestedit.readyState ===4 && ajaxRequestedit.status===200){
+           response=(ajaxRequestedit.responseText);
+        }
+        };
+    }
+        
+</script>
+
+
+<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+    <thead>
+        <tr>
+            
+                
+        </tr>
+    </thead>
+    <tbody>
+    <?php $i=0;
+        echo "<a href=".'http://localhost/zend_project/public/Forum/addforum?cat_id='.$this->categoryID.">add forum</a>";
+        
+        
+        
+
+        foreach ($this->forums  as $forum) { ?>
+
+        <tr <?php echo "id='row".$forum['forumId']."'";?>>
+         <td <?php echo "id='forumName".$forum['forumId']."'";?>>
+        <?php
+          echo "<a"."  id='link.".$forum['forumId']."' href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.$forum['forumId'].">".$forum['forumName']."</a>" ;
+       
+        ?>    
+        </td>        
+          <?php
+echo "<td>"."<input value='delete' type='button'  id='".$forum['forumId']."' onclick =ajax('Forum/deleteforum?forumId=".$forum['forumId']."') >";  
+echo "</td>";        
+
+?>
+        <?php
+echo "<td>"."<input value='";
+if($forum['isLocked']){echo 'unlock';}else{echo 'lock';} 
+echo "' type='button'  id='lbtn".$forum['forumId']."' onclick = \" ajaxlock('Forum/lockforum?forumId=".$forum['forumId']."&forumLock=".$forum['isLocked']."' ,".$forum['forumId'].")\" >";  
+echo "</td>";        
+
+?>
+        
+        <td>
+        <?php
+echo "<td>"."<input value='edit' type='button'  id='".$forum['forumId']."' onclick =editwithajax('Forum/editforum?forumId=".$forum['forumId']."',".$forum['forumId'].",'".$forum['forumName']."')>" ;  
+echo "</td>";  
+        
+?>
+        
+        
+        </tr>    
+    
+        
+              
+        <?php } ?>                            
+    </tbody>
+</table>
+

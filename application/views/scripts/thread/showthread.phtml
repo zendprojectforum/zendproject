@@ -1,0 +1,78 @@
+
+<style> 
+    .reply {
+        border: 2px solid;
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    #thread{
+        border:solid 5px; 
+        margin: 10px;
+        padding:20px;
+    }
+    
+    #replies{
+        margin:70px; 
+        padding:20px;
+    }
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://localhost/zend_project/public/media/js/thread/showthread.js" ></script>
+
+  <?php  
+ //$x = getcwd ();
+ //$this->HeadScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js','text/javascript');
+ //$this->HeadScript()->appendFile($x.'/js/showThread.js','text/javascript');
+ //$this->inlineScript()->appendFile($this->baseUrl($x.'js/showThread.js'));
+ // $this->HeadScript()->appendFile('http://localhost/zend_project/public/js/showThread.js','text/javascript');
+?>
+
+
+<br /><br />
+<div id="view-content">
+
+    <?php
+    //display thread
+echo "<div  id = 'thread'  > "
+ ."<br><br>Posted by: " . "myusername"  
+ ."<img src= >" 
+ . $this->thread['date'] . "<br/>" 
+ ."<h1>" . $this->thread['threadTitle'] . "</h1>" 
+ ."<p>" . $this->thread['body'] . "</p>" 
+ ."<button name='" . $this->thread['threadId'] . "' onclick='editThread(this)'>Edit</button>" 
+ ."<button  name='" . $this->thread['threadId'] . "' onclick='deleteThread(this)'>Delete</button></div>";
+/* echo "<div  id = 'thread'  > <p>" . $this->thread['body'] ."</p>";
+  echo "<br/> <button id ='".$this->thread['threadId']."' onclick='editThread(this)'>Edit</button>";
+  echo "<button id ='".$this->thread['threadId']."' onclick='deleteThread(this)'>Delete</button></div>"; */
+
+    
+    
+    //display replies
+    $i = 0;
+    echo "<div id = 'replies' >";
+    foreach ($this->replies as $reply) {
+
+        echo "<div id='" . $reply['replyId'] . "' class='reply' > <br><br>Posted by: " . $this->users[$i][1];  //username
+        echo "<img src='" . $this->users[$i][2] . "' >";  //image
+        if ($reply['edited']){
+            echo "<label> Edited </label>";
+        }
+        echo $reply['Date'];
+        echo "<br><p>" . $reply['body'] . "</p>";
+        echo "<button onclick='edit(this)'>Edit</button>";
+        echo "<button onclick='deleteReply(this)'>Delete</button></div>";
+
+        $i++;
+    }
+    echo "</div>";
+    ?>
+</div>
+
+
+<!-- add reply -->
+<textarea class="replyText" cols="50" rows="10" placeholder="Add reply..." ></textarea>
+<button  onclick="reply(<?php echo $this->id ?>)" type="submit">Reply</button>
+
+
+
