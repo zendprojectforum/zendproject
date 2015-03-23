@@ -10,7 +10,7 @@
 //$this->form->setAction($this->url());
 ?>
 
-<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" >  
     
     <tbody>
             <?php $i=0;
@@ -21,7 +21,7 @@
             foreach ($threads  as $thread) { ?>
             <tr>
            <td>
-             <?php echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId'].">". $thread['threadTitle']."</a>"?>   
+             <?php echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId']."'>". $thread['threadTitle']."</a>"?>   
            
             
             </td>        

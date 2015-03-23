@@ -46,6 +46,7 @@ class Application_Model_Thread  extends Zend_Db_Table_Abstract
         $row->threadTitle = $data['threadtitle'];
         $row->isLocked = 0;
         $row->forum_id = $data['forumId'];
+        $row->user_id = $data['user_id'];
        
         return $row->save();
 
