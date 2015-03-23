@@ -22,7 +22,7 @@ function reply(threadId, username , image) {
     function (data, status) {
         var reply = jQuery.parseJSON(data);
         $("#replies").append("<div id='" + reply['replyId'] + "'" + " class='reply' >" +
-                "<br><br>Posted by: " + username + //username
+                "<br><br>Posted by: <label>" + username +"</label>"+ //username
                 "<img src='"+image+"' >" + //image
                 reply['Date'] + "<br/>" +
                 "<p>" + reply['body'] + "</p>" + // echo "<br>".$reply['body'];
@@ -84,7 +84,7 @@ function editReply(elm , img , name) {    //update reply with ajax
             },
     function (data, status) {
 
-        parDiv.innerHTML = "<br><br>Posted by: <label>" + name +"</label> "+ //username
+        parDiv.innerHTML = "<br><br>Posted by: <label>"+ name +"</label> "+ //username
                 "<img src="+img+" >" + //image
                 "<label> Edited </label>" +
                 getCurrentDATETIME() + "<br/>" +

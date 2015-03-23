@@ -67,8 +67,8 @@ $isban = $this->myInfo->isBan;
     $i = 0;
     echo "<div id = 'replies' >";
     foreach ($this->replies as $reply) {
+        
     if ($this->users[$i][3] ||  !($this->users[$i][4])){  //admin or not banned
-
         echo "<div id='" . $reply['replyId'] . "' class='reply' > <br><br>Posted by:<label>" . $this->users[$i][1] . "</label>";  //username
         echo "<img src=" . $this->baseUrl() . "/media/images/" . $this->users[$i][2] . " >";  //image
         if ($reply['edited']) {
@@ -83,8 +83,9 @@ $isban = $this->myInfo->isBan;
     else{
         echo "</div>";
     }
-        $i++;
     }
+            $i++;
+
     }
     echo "</div></div>";
     

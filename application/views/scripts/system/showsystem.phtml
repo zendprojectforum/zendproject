@@ -1,0 +1,28 @@
+
+<script src="http://localhost/zend_project/public/media/js/system/showsystem.js" ></script>
+
+
+<br /><br />
+<div id="view-content">
+    <table><tr>
+            <th>Status</th>
+            <th>Last change by</th>
+        </tr><tr>
+            
+            
+<?php
+ 
+if ($this->status == 0){
+    echo "<td><button onclick='system()'>OFF</button></td>";   
+}else{
+    echo "<td><button onclick='system()'>ON</button></td>";   
+}
+
+
+echo "<td>".$this->adminname."</td>"; 
+ 
+ 
+ 
+?>
+        </tr></table>
+</div>

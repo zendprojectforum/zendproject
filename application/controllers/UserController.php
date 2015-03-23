@@ -1,16 +1,20 @@
 <?php
 
-class UserController extends Zend_Controller_Action {
+class UserController extends Zend_Controller_Action
+{
 
-    public function init() {
+    public function init()
+    {
         /* Initialize action controller here */
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         // action body
     }
 
-    public function loginAction() {
+    public function loginAction()
+    {
         $form = new Application_Form_Login();
         if ($this->_request->isPost()) {
 
@@ -26,12 +30,28 @@ class UserController extends Zend_Controller_Action {
                 $authAdapter->setIdentity($email);
                 $authAdapter->setCredential(md5($password));
                 
+                
                 //authenticate
                 $result = $authAdapter->authenticate();
                 
-                if ($result->isValid()) {
+                if ($result->isValid()) {        
+                    
                     $auth = Zend_Auth::getInstance();
-                    $storage = $auth->getStorage();
+                    $storage = $auth->getStorage();                    
+                    $data = $authAdapter->getResultRowObject('isAdmin','pass');
+                    if(!$data->isAdmin){
+                        $sys_mdl = new Application_Model_System();
+                        $status = $sys_mdl->getStatus()[0]['status'];
+                        echo "here";
+                        if (!$status){ //system closed
+                            $storage->write(array('system'=> 'closed'));
+                            $this->redirect('user/systemclosed');
+                
+
+                        }
+                    }
+                    
+                    
                     $storage->write($authAdapter->getResultRowObject(array('id', 'username', 'signature', 'isAdmin', 'isBan')));
                     $this->redirect("thread/showthread/id/1");
                 } else {
@@ -45,7 +65,8 @@ class UserController extends Zend_Controller_Action {
         $this->view->form = $form;
     }
 
-    public function registerAction() {
+    public function registerAction()
+    {
         $form = new Application_Form_User();
         if ($this->_request->isPost()) {
             if ($form->isValid($this->_request->getParams())) {
@@ -71,14 +92,15 @@ class UserController extends Zend_Controller_Action {
         $this->view->form = $form;
     }
 
-    public function listusersAction() {
+    public function listusersAction()
+    {
         $user_model = new Application_Model_User;
         $users = $user_model->getUsers();
         $this->view->users = $users;
     }
-    
 
-    public function banAction() {
+    public function banAction()
+    {
         if ($this->_request->isPost()) {
             $data['isBan'] = $this->_request->getParam('status');
             $cond = 'id= ' . $this->_request->getParam('id');
@@ -88,7 +110,8 @@ class UserController extends Zend_Controller_Action {
         }
     }
 
-    public function makeadminAction() {
+    public function makeadminAction()
+    {
         if ($this->_request->isPost()) {
             $data['isAdmin'] = $this->_request->getParam('status');
             $cond = 'id= ' . $this->_request->getParam('id');
@@ -98,42 +121,40 @@ class UserController extends Zend_Controller_Action {
         }
     }
 
-    public function editAction() {
+    public function editAction()
+    {
         
         $id = ($this->_request->getParam('id'));
-        echo $id;
-        if (!empty($id)){
-        $form = new Application_Form_User();
-        if ($this->_request->isPost()) {
-            if ($form->isValid($this->_request->getParams())) {
-                $user_info = $form->getValues();
-                $user_model = new Application_Model_User();
-                $user_model->editUser($user_info);
-                $this->view->message= "user updated successfully";
-            }
-        }
-            
-            $user_model = new Application_Model_User();
-            $user = $user_model->getUserById($id);
-            var_dump($user);
-
-            
+        if (!empty($id)) {
+            $form = new Application_Form_User();
             $form->getElement("password")->setRequired(false);
+            $form->removeElement('confirm_pswd');
             $email = $form->getElement("email");
             $email->removeValidator('Db_NoRecordExists');
+            
+
+            if ($this->_request->isPost()) {                            //save updates
+                if ($form->isValid($this->_request->getParams())) {
+                    $user_info = $form->getValues();
+                    $user_model = new Application_Model_User();
+                    $user_info['id'] = $id;
+                    $user_model->editUser($user_info);
+                    $this->view->message = "user updated successfully";
+                }
+            }
+            $user_model = new Application_Model_User();
+            $user = $user_model->getUserById($id);
             
             $form->populate($user[0]);
             $this->view->form = $form;
             $this->view->image = $user[0]['signature'];
+        } else {
+            $this->render('error');
         }
-        else {
-	$this->render('error');
- 
-        }
-       
     }
 
-    public function deleteuserAction() {
+    public function deleteuserAction()
+    {
         if ($this->_request->isPost()) {
             $cond = 'id= ' . $this->_request->getParam('id');
             $user_model = new Application_Model_User;
@@ -142,4 +163,12 @@ class UserController extends Zend_Controller_Action {
         }
     }
 
+    public function systemclosedAction()
+    {
+        
+    }
+
+
 }
+
+

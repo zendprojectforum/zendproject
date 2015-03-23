@@ -62,6 +62,7 @@ class ThreadController extends Zend_Controller_Action
                     $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan']);
                  }
 
+
                 $this->view->users = $replyUsers;
                 $this->view->myInfo = $bootstrap->myinfo;
                 $this->view->threadUser = $threadUser;

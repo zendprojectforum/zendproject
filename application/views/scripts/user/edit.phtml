@@ -1,18 +1,34 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
 <style>
     img{
         width:140px;
         height:140px;
     }
+    input{
+        width:30% !important;
+    }
 </style>
 
 
 <br /><br />
-<div id="view-content">
-        <?php if($this->message)
-            echo "<p> <b> ".$this->message ."</b></p></div>"; 
-	?>
-<?php
 
-echo $this->form;
-echo "<img src ='/zend_project/public/media/images/".$this->image."' >";
-?>
+<div class='container'>
+    <div id="view-content">
+        <?php
+        if ($this->message)
+            echo "<p> <b> " . $this->message . "</b></p></div>";
+        ?>
+
+
+    </div>
+    <div class="form-group">
+        <?php
+         $img = '/zend_project/public/media/images/' . $this->image;
+        echo "<img class='img-rounded' src ='$img' ";
+        
+        echo $this->form;
+       
+        ?>
+    </div>
+</div >
