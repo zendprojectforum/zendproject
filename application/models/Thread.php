@@ -27,7 +27,8 @@ class Application_Model_Thread  extends Zend_Db_Table_Abstract
        
         $select = $this->select();
         $select->from('thread');
-        $select->where('forum_id = ?', $forumid);
+        $select->where("forum_id ={$forumid}");
+        $select->order('isSticky DESC');
         $stmt = $select->query();
         $result = $stmt->fetchAll();
         return $result;
@@ -48,6 +49,35 @@ class Application_Model_Thread  extends Zend_Db_Table_Abstract
         $row->forum_id = $data['forumId'];
        
         return $row->save();
+
+    }
+    
+    function stickthread($threadid,$forumid){      
+        $select = $this->select();
+        
+        //get sticky and mark as un sticky
+        $select->from('thread');
+        $select->where('forum_id = ?', $forumid);
+        $stmt = $select->query();
+        $result = $stmt->fetchAll();
+        
+        for($i=0;$i<count($result);$i++){
+         
+         $this->update(array('isSticky'=>0), "threadId={$result[$i]['threadId']} and threadId != $threadid");
+        
+         
+        }
+        
+        ////////////////////////////////
+        $select = $this->select();
+        $select->from('thread');
+        $select->where('threadId = ?', $threadid);
+        $stmt = $select->query();
+        $result = $stmt->fetchAll();
+              
+
+        return $this->update(array('isSticky'=>!$result[0]["isSticky"]), "threadId={$threadid}");
+        
 
     }
     

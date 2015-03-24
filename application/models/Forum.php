@@ -25,7 +25,9 @@ class Application_Model_Forum extends Zend_Db_Table_Abstract
         
         
         
-     }function listspecificforum($forumid){
+     }
+     
+     function listspecificforum($forumid){
         
        
         $select = $this->select();

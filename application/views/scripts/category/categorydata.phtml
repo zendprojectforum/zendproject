@@ -94,8 +94,11 @@ function editwithajax(url,id,name){
     </thead>
     <tbody>
     <?php $i=0;
+   
+     if($this->myInfo->isAdmin && !$this->lock){
+         
         echo "<a href=".'http://localhost/zend_project/public/Forum/addforum?cat_id='.$this->categoryID.">add forum</a>";
-        
+     }
         
         
 
@@ -109,6 +112,7 @@ function editwithajax(url,id,name){
         ?>    
         </td>        
           <?php
+           if($this->myInfo->isAdmin){
 echo "<td>"."<input value='delete' type='button'  id='".$forum['forumId']."' onclick =ajax('Forum/deleteforum?forumId=".$forum['forumId']."') >";  
 echo "</td>";        
 
@@ -125,7 +129,7 @@ echo "</td>";
         <?php
 echo "<td>"."<input value='edit' type='button'  id='".$forum['forumId']."' onclick =editwithajax('Forum/editforum?forumId=".$forum['forumId']."',".$forum['forumId'].",'".$forum['forumName']."')>" ;  
 echo "</td>";  
-        
+           }
 ?>
         
         

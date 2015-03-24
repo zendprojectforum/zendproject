@@ -31,7 +31,7 @@
      echo "<div class='col-md-12'><table class='table table-striped'>";
      
      echo "<th>ID</th><th>Username</th><th>Password</th><th>Email</th><th>Gender</th><th>Status</th>"
-     . "<th>Country</th><th>Signature</th><th>Action</th>";
+     . "<th>Country</th><th>Profile picture</th><th>Signature</th><th>Actions</th>";
      
     foreach ($this->users as $user){
         
@@ -44,6 +44,7 @@
         echo "<td> ".$user['gender'] ."</td>";
         echo "<td> ".$user['status'] ."</td>";
         echo "<td> ".$user['country'] ."</td>";
+        echo "<td><img src='/zend_project/public/media/profile/".$user['profpic'] ."' ></td>";
         echo "<td><img src='/zend_project/public/media/images/".$user['signature'] ."' ></td>";
         echo "<td><button  class='btn btn-lg btn-danger' onclick='deleteUser(this)' >Delete</button>";
 

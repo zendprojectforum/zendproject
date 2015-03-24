@@ -33,11 +33,16 @@ class ForumController extends Zend_Controller_Action
     }
     
     public function forumdataAction() {
+       $front = Zend_Controller_Front::getInstance();
+       $bootstrap = $front->getParam("bootstrap"); 
        $forumId=$this->_request->getParam('forumId');
        $posts_model= new Application_Model_Thread();
        $posts = $posts_model->listpoststospecificform($forumId);
+       $forum_model= new Application_Model_Forum();
+       
        $this->view->posts=$posts; 
-        
+       $this->view->lock=$forum_model->listspecificforum($forumId)[0]["isLocked"];
+       $this->view->myInfo = $bootstrap->myinfo; 
     }
   public function lockforumAction() {
       

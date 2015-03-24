@@ -1,15 +1,40 @@
+<?php echo $this->partial('user/header.phtml' );?>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <style>
     input{
-        width:20% !important;
+        width:90% !important;
+    }
+    label{
+        float:left;
+    }
+    td{
+        padding-bottom: 20px;
+    }
+    h1{
+        margin-bottom: 50px;
+    }
+    #submit{
+        margin-top: 50px;
+        height:70px;
+        font-size:30px;
     }
     
 </style>
 <br /><br />
+<div class="container">
+  <div class="jumbotron" align="center">
+        
+    
+  
+<h1> Sign Up </h1>
 <div id="view-content" class="form-group" >
-	<p>View script for controller <b>User</b> and script/action name <b>register</b></p>
+	
         
 <?php
 echo $this->form;
 ?>
+</div>
+</div>
+
+  
 </div>

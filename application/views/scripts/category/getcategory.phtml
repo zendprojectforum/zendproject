@@ -59,8 +59,10 @@ function ajaxlock(url,id){
     </thead>
     <tbody>
     <?php $i=0;
-        echo "<a href=".'http://localhost/zend_project/public/Category/addcategory'.">add category</a>";
-        foreach ( $this->categories as $category) { ?>
+        if($this->myInfo->isAdmin ){
+         echo "<a href=".'http://localhost/zend_project/public/Category/addcategory'.">add category</a>";
+        }
+         foreach ( $this->categories as $category) { ?>
         <tr <?php echo "id='row".$category['catId']."'";?>> 
             
         
@@ -81,7 +83,7 @@ echo "</td>";
         </td> 
         <td>
         <?php
-          echo "<a href=".'http://localhost/zend_project/public/Category/editcategory?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".'edit'.$category['catName']."</a>" ;
+          echo "<a  href=".'http://localhost/zend_project/public/Category/editcategory?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".'<button>'.'edit'.$category['catName'].'</button>'."</a>" ;
        
         ?>
         
@@ -90,7 +92,7 @@ echo "<td>"."<input value='";
 if($category['catIsLocked']){echo 'unlock';}else{echo 'lock';} 
 echo "' type='button'  id='lbtn".$category['catId']."' onclick = \" ajaxlock('Category/lockcategory?catId=".$category['catId']."&forumLock=".$category['catIsLocked']."' ,".$category['catId'].")\" >";  
 echo "</td>";        
-
+       }
 ?>
         
         </tr> 
@@ -120,7 +122,7 @@ echo "<a href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.
    
         <?php } ?>
               
-       <?php $i=$i+1; }}?>                            
+       <?php $i=$i+1; }?>                            
     </tbody>
 </table>
 

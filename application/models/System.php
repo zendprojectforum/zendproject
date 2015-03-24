@@ -13,7 +13,7 @@
     }
     
     function updateStatus($data){   
-       return $this ->updateStatus($data);
+       return $this ->update($data, 'id=1');
     }
     
     

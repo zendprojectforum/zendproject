@@ -3,8 +3,44 @@
 <div id="view-content">
 	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
 </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    
+    function deleteThread(id) {
 
-<
+   var thrId = id; // this gets the parent classes.
+    
+    //ajax request
+    $.post("/zend_project/public/thread/deletethread",
+            {
+                id: thrId
+            },
+            function (data, status) {
+                
+                
+            });
+
+    data = "id=" + thrId;
+    $.ajax({
+        data: data,
+        
+        success: function () {
+         
+              thrId=Number(thrId);
+            
+             document.getElementById('row'+thrId).parentNode.removeChild(document.getElementById('row'+thrId));
+        
+
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.responseText);
+        }
+    });
+
+
+}
+
+ </script>   
 
 <?php
 //$this->form->setAction($this->url());
@@ -16,14 +52,28 @@
             <?php $i=0;
             $threads=$this->posts;
             $forumId=$_GET['forumId'];
+            if (!$this->lock){
             echo "<a href=".'http://localhost/zend_project/public/Thread/addthread?forumId='.$forumId.">add thread</a>";
-        
+            }   
             foreach ($threads  as $thread) { ?>
-            <tr>
+        <tr <?php echo "id=row".$thread['threadId'];?>>
            <td>
-             <?php echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId'].">". $thread['threadTitle']."</a>"?>   
-           
+             
+             <?php 
             
+            echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId']."'>". $thread['threadTitle']."</a>" ;  
+            if($this->myInfo->isAdmin||$this->myInfo->id==$thread['userId']){
+            echo "<button  id='" . $thread["threadId"] . "' onclick="."deleteThread(".$thread['threadId'].")".">Delete</button>";
+            
+                
+            }
+             if($this->myInfo->isAdmin){
+             if($thread['isSticky']){
+                 echo "stick";
+                 $sticky="unsticky";}else{$sticky='markassticky';}     
+             echo "<td>"."<a href='http://localhost/zend_project/public/Thread/markstickythread?threadId=".$thread['threadId']."&forumId=".$forumId."'>".$sticky. $thread['threadTitle']."</a>"."</td>" ;  
+                
+             }?>  
             </td>        
             
             

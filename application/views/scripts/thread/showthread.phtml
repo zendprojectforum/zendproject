@@ -1,6 +1,6 @@
 
 <style> 
-    .reply {
+    .replyDiv {
         border: 2px solid;
         margin: 10px;
         padding: 20px;
@@ -21,77 +21,97 @@
         width: 40px;
         height: 40px;
     }
+
+    .sig{
+        margin-left: 500px;
+    }
+    .sig1{
+        margin-left: 600px;
+    }
+    .edited{
+        display:block;
+
+    }
 </style>
+
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="http://localhost/zend_project/public/media/js/thread/showthread.js" ></script>
 
+
+
+
+
+
 <?php
 $username = $this->myInfo->username;
-$image = $this->baseUrl() . "/media/images/" . $this->myInfo->signature;
+if ($this->myInfo->signature) {
+    $image = $this->baseUrl() . "/media/images/" . $this->myInfo->signature;
+} else {
+    $image = 0;
+}
+$profpic = $this->baseUrl() . "/media/profile/" . $this->myInfo->profpic;
 $myId = $this->myInfo->id;
 $isadmin = $this->myInfo->isAdmin;
 $isban = $this->myInfo->isBan;
-
-
-
-//$x = getcwd ();
-//$this->HeadScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js','text/javascript');
-//$this->HeadScript()->appendFile($x.'/js/showThread.js','text/javascript');
-//$this->inlineScript()->appendFile($this->baseUrl($x.'js/showThread.js'));
-// $this->HeadScript()->appendFile('http://localhost/zend_project/public/js/showThread.js','text/javascript');
 ?>
 
 
 <br /><br />
 <div id="view-content">
 
-    <?php
-    //display thread
-    $funcStr = "this,\"". $this->threadUser[1] . "\" , \"".$this->baseUrl() . "/media/images/" . $this->threadUser[2]."\"" ;
-    
-    echo "<div  id = 'thread'  > "
-    . "<br><br>Posted by: <label>" . $this->threadUser[1] . "</label>"
-    . "<img src='" . $this->baseUrl() . "/media/images/" . $this->threadUser[2] . "' >"
-    . $this->thread['date'] . "<br/>"
-    . "<h1>" . $this->thread['threadTitle'] . "</h1>"
-    . "<p>" . $this->thread['body'] . "</p>";
-    if ($isadmin || ($myId == $this->threadUser[0])) {
-        echo "<button name='" . $this->thread['threadId'] . "' onclick='editThread(".$funcStr." )'>Edit</button>"
-        . "<button  name='" . $this->thread['threadId'] . "' onclick='deleteThreadthis)'>Delete</button></div>";
-    } else {
-        echo "</div>";
-    }
+<?php
+echo "<div  id = 'thread'  > "
+ . "<img style='padding-right: 12px;' src='" . $this->baseUrl() . "/media/profile/" . $this->threadUser[3] . "' >"
+ . "<span class='label label-default' style='font-size:30px;'><label >" . $this->threadUser[1] . "</span></label>"
+ . "<br/>" . $this->thread['date'] . "<br/>"
+ . "<h1>" . $this->thread['threadTitle'] . "</h1>"
+ . "<p>" . $this->thread['body'] . "</p>";
+if ($this->threadUser[2]) {
+    echo "<div class='sig1'><img style='width: 176px;height: 187px;'src='" . $this->baseUrl() . "/media/images/" . $this->threadUser[2] . "'></div>";
+}
+if ($isadmin || (($myId == $this->threadUser[0]) && !$isban)) {
+    echo "<br><button id = 'editbtn' name='" . $this->thread['threadId'] . "' onclick='editThread(this)'>Edit</button></div>";
+    //  . "<button  name='" . $this->thread['threadId'] . "' onclick='deleteThreadthis)'>Delete</button></div>";
+} else {
+    echo "</div>";
+}
 
 
-    //display replies
-    $i = 0;
-    echo "<div id = 'replies' >";
-    foreach ($this->replies as $reply) {
-        
-    if ($this->users[$i][3] ||  !($this->users[$i][4])){  //admin or not banned
-        echo "<div id='" . $reply['replyId'] . "' class='reply' > <br><br>Posted by:<label>" . $this->users[$i][1] . "</label>";  //username
-        echo "<img src=" . $this->baseUrl() . "/media/images/" . $this->users[$i][2] . " >";  //image
+//display replies
+$i = 0;
+echo "<div id = 'replies' >";
+foreach ($this->replies as $reply) {
+
+    if ($this->users[$i][3] || !($this->users[$i][4])) {  //admin or not banned
+        echo "<div id='" . $reply['replyId'] . "' class='replyDiv' >";
+        echo "<img src=" . $this->baseUrl() . "/media/profile/" . $this->users[$i][5] . " >"  //image
+        . "<span class='label label-default' style='font-size:30px;'> <label>" . $this->users[$i][1] . "</label></span>";  //username
+
+
         if ($reply['edited']) {
-            echo "<label> Edited </label>";
+            echo "<label class='edited'> Edited </label>";
         }
-        echo $reply['Date'];
-        echo "<br><p>" . $reply['body'] . "</p>";
-    if ($isadmin ||($myId == $this->users[$i][0])){
-        echo "<button onclick='edit(this)'>Edit</button>";
-        echo "<button onclick='deleteReply(this)'>Delete</button></div>";
-    }
-    else{
-        echo "</div>";
-    }
-    }
-            $i++;
+        echo "<label class='date'> " . $reply['Date'] . "</label>";
 
+        echo "<br><p>" . $reply['body'] . "</p>";
+        if ($this->users[$i][2]) {
+            echo "<div class='sig' ><img style='width: 160px;height: 160px;' src=" . $this->baseUrl() . "/media/images/" . $this->users[$i][2] . " ></div>";  //image
+        }
+        if ($isadmin || ($myId == $this->users[$i][0])) {
+            echo "<button class='editcomment' onclick='edit(this)'>Edit</button>";
+            echo "<button class='deletecomment' onclick='deleteReply(this)'>Delete</button></div>";
+        } else {
+            echo "</div>";
+        }
     }
-    echo "</div></div>";
-    
-    
-if (!$isban){
+    $i++;
+}
+echo "</div></div>";
+
+
+if ($isadmin || !$isban) {
     echo "<textarea class='replyText' cols='50' rows='10' placeholder='Add reply...' ></textarea>";
-    echo "<button  onclick=\"reply(" .$this->id ." ,'$username','$image' )\" type='submit'>Reply</button>";
+    echo "<button  onclick=\"reply(" . $this->id . " ,'$username','$image','$profpic' )\" type='submit'>Reply</button>";
 }
 ?>

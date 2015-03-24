@@ -30,6 +30,18 @@ class ThreadController extends Zend_Controller_Action
 
     
     //called by AJAX
+public function markstickythreadAction(){
+ 
+        $threadId=$this->_request->getParam('threadId');
+        $forumId= $this->_request->getParam('forumId');
+        
+        $thread_model = new Application_Model_Thread();
+        
+        $thread_model->stickthread($threadId,$forumId);
+        
+        $this->redirect('/Forum/forumdata?forumId='.$forumId);
+
+   }
     
 public function addthreadAction(){
 
@@ -141,7 +153,7 @@ public function addthreadAction(){
     public function deletethreadAction(){
 
             if ($this->_request->isPost()){
-                       
+                     
                $cond='threadId= '.$this->_request->getParam('id');
                $thr_model = new Application_Model_Thread();
                $thr_model->deleteThread($cond);

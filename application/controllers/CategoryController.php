@@ -39,15 +39,22 @@ class CategoryController extends Zend_Controller_Action
     
     public function categorydataAction()
     {
+        $front = Zend_Controller_Front::getInstance();
+        $bootstrap = $front->getParam("bootstrap");
         $categoryID=$this->getRequest()->getParam('categoryId');
         $forum_model = new Application_Model_Forum();
         
         $forums = $forum_model->listforumstospecificcategory((int)$categoryID);
         $this->view->forums=$forums;
         $this->view->categoryID=$categoryID;
-        
+        $this->view->myInfo = $bootstrap->myinfo;
+        $category_model = new Application_Model_Category();
+        $this->view->lock=$category_model->listspecificcategory($categoryID)[0]["catIsLocked"]; 
     }
     function addcategoryAction(){
+        $front = Zend_Controller_Front::getInstance();
+        $bootstrap = $front->getParam("bootstrap");
+        
         $form  = new Application_Form_addcategory();
         $validator = new Zend_Validate_Db_NoRecordExists( array('table' => 'category','field' => 'catName'));
         if ($validator->isValid($this->_request->getParam('catName'))) {
@@ -60,7 +67,8 @@ class CategoryController extends Zend_Controller_Action
                $category_info = $form->getValues();
                $category_model = new Application_Model_Category();
                $category_model->addcategory($category_info);
-           $this->redirect('/Category/getcategory');        
+               
+               $this->redirect('/Category/getcategory');        
                    
            }
      
@@ -72,7 +80,7 @@ class CategoryController extends Zend_Controller_Action
                 echo "$message\n";
             }
         } 
-       
+        $this->view->myInfo = $bootstrap->myinfo;
         $this->view->form=$form;
   
      }

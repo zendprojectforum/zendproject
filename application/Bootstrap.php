@@ -6,8 +6,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         try {
             $config = array(
                 'auth' => 'login',
-                'username' => 'putyour@gmail.com',
-                'password' => 'password',
+                'username' => 'mertloka@gmail.com',
+                'password' => '',
                 'ssl' => 'tls',
                 'port' => 587
             );
@@ -23,33 +23,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         //$action = $this->getRequest()->getActionName();
         $this->user2;
         $authorization = Zend_Auth::getInstance();
-        if (!$authorization->hasIdentity()) {
-
-            //if (!($action == "login"))
-            //     $this->redirect("user/login");
-        }
-        /* else {
-          //if (($action == "login" ) || ($action == "add" ) ){
-          //     $this->redirect("article/list");
-          } */ else {
-            $info = $authorization->getIdentity();
+        if ($authorization->hasIdentity()) {
+             $info = $authorization->getIdentity();
             $this->myinfo = $info;
+        /* else {
+          } */
+           
             //$name = $info->username ;
             // echo "welcome $name";
         }
       
     }
 
-    public function _initRequest() {
-        $this->bootstrap('frontController');
-        $front = $this->getResource('frontController');
-        $front->setRequest(new Zend_Controller_Request_Http());
-
-        $request = $front->getRequest()->getControllerName();
-       // $controller = $request->getControllerName();
-      //  echo $request+"777";
-
-    }
+   
 
     var $myinfo;
 
