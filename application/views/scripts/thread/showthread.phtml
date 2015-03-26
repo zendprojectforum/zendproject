@@ -1,9 +1,14 @@
+<?php echo $this->partial('user/header.phtml' );?>
+<style>
+    button{
+        margin: 5px !important;
 
-<style> 
+    }
     .replyDiv {
         border: 2px solid;
         margin: 10px;
         padding: 20px;
+        background-color: rgba(128, 128, 128, 0.17);
     }
 
     #thread{
@@ -18,7 +23,7 @@
     }
 
     img{
-        width: 40px;
+        width: 40px ;
         height: 40px;
     }
 
@@ -32,10 +37,18 @@
         display:block;
 
     }
+     .date{
+        display:block;
+
+    }
+    #threaduserImg{
+        width: 40px !important;
+        height: 40px !important;
+    }
 </style>
 
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
 <script src="http://localhost/zend_project/public/media/js/thread/showthread.js" ></script>
 
 
@@ -44,40 +57,46 @@
 
 
 <?php
-$username = $this->myInfo->username;
-if ($this->myInfo->signature) {
-    $image = $this->baseUrl() . "/media/images/" . $this->myInfo->signature;
-} else {
-    $image = 0;
+if ($this->myInfo){
+    $username = $this->myInfo->username;
+    if ($this->myInfo->signature) {
+        $image = $this->baseUrl() . "/media/images/" . $this->myInfo->signature;
+    } else {
+        $image = 0;
+    }
+    $profpic = $this->baseUrl() . "/media/profile/" . $this->myInfo->profpic;
+    $myId = $this->myInfo->id;
+    $isadmin = $this->myInfo->isAdmin;
+    $isban = $this->myInfo->isBan;
 }
-$profpic = $this->baseUrl() . "/media/profile/" . $this->myInfo->profpic;
-$myId = $this->myInfo->id;
-$isadmin = $this->myInfo->isAdmin;
-$isban = $this->myInfo->isBan;
+ else {
+     $isban = 1;
+     $isadmin = 0;
+     $myId = NULL;
+}
 ?>
 
 
 <br /><br />
 <div id="view-content">
-
+<div  id = 'thread'  class='jumbotron' > 
 <?php
-echo "<div  id = 'thread'  > "
- . "<img style='padding-right: 12px;' src='" . $this->baseUrl() . "/media/profile/" . $this->threadUser[3] . "' >"
- . "<span class='label label-default' style='font-size:30px;'><label >" . $this->threadUser[1] . "</span></label>"
- . "<br/>" . $this->thread['date'] . "<br/>"
+
+ echo "<img id='threaduserImg' style='padding-right: 12px;' src='" . $this->baseUrl() . "/media/profile/" . $this->threadUser[3] . "' >"
+ . "<span  style='font-size:30px;'><label >" . $this->threadUser[1] . "</span></label>"
+ . "<br/><label class='date'>" . $this->thread['date'] . "</label><br/>"
  . "<h1>" . $this->thread['threadTitle'] . "</h1>"
  . "<p>" . $this->thread['body'] . "</p>";
 if ($this->threadUser[2]) {
     echo "<div class='sig1'><img style='width: 176px;height: 187px;'src='" . $this->baseUrl() . "/media/images/" . $this->threadUser[2] . "'></div>";
 }
 if ($isadmin || (($myId == $this->threadUser[0]) && !$isban)) {
-    echo "<br><button id = 'editbtn' name='" . $this->thread['threadId'] . "' onclick='editThread(this)'>Edit</button></div>";
-    //  . "<button  name='" . $this->thread['threadId'] . "' onclick='deleteThreadthis)'>Delete</button></div>";
-} else {
-    echo "</div>";
+    echo "<br><button id = 'editbtn' name='" . $this->thread['threadId'] . "' style='margin-left:95% !important;' class='btn btn-lg btn-success' onclick='editThread(this)'>Edit</button>";
 }
+?>
+    </div>
 
-
+<?php
 //display replies
 $i = 0;
 echo "<div id = 'replies' >";
@@ -86,7 +105,7 @@ foreach ($this->replies as $reply) {
     if ($this->users[$i][3] || !($this->users[$i][4])) {  //admin or not banned
         echo "<div id='" . $reply['replyId'] . "' class='replyDiv' >";
         echo "<img src=" . $this->baseUrl() . "/media/profile/" . $this->users[$i][5] . " >"  //image
-        . "<span class='label label-default' style='font-size:30px;'> <label>" . $this->users[$i][1] . "</label></span>";  //username
+        . "<span  style='font-size:30px;'> <label>" . $this->users[$i][1] . "</label></span>";  //username
 
 
         if ($reply['edited']) {
@@ -99,8 +118,8 @@ foreach ($this->replies as $reply) {
             echo "<div class='sig' ><img style='width: 160px;height: 160px;' src=" . $this->baseUrl() . "/media/images/" . $this->users[$i][2] . " ></div>";  //image
         }
         if ($isadmin || ($myId == $this->users[$i][0])) {
-            echo "<button class='editcomment' onclick='edit(this)'>Edit</button>";
-            echo "<button class='deletecomment' onclick='deleteReply(this)'>Delete</button></div>";
+            echo "<button class='btn btn-lg btn-success editcomment'  style='margin-left:85% !important;' onclick='edit(this)'>Edit</button>";
+            echo "<button class='btn btn-lg btn-danger deletecomment'   onclick='deleteReply(this)'>Delete</button></div>";
         } else {
             echo "</div>";
         }
@@ -110,8 +129,8 @@ foreach ($this->replies as $reply) {
 echo "</div></div>";
 
 
-if ($isadmin || !$isban) {
-    echo "<textarea class='replyText' cols='50' rows='10' placeholder='Add reply...' ></textarea>";
-    echo "<button  onclick=\"reply(" . $this->id . " ,'$username','$image','$profpic' )\" type='submit'>Reply</button>";
+if (!$this->thread['isLocked'] && ($isadmin || !$isban ) ) {
+    echo "<textarea class='replyText' cols='155' rows='10' placeholder='Add reply...'   style='margin-left:100px;' ></textarea>";
+    echo "<br/><button class='btn btn-lg btn-default' style='margin-left:100px;' onclick=\"reply(" . $this->id . " ,'$username','$image','$profpic' )\" type='submit' ' >Reply</button>";
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-class Application_Form_Login extends Zend_Form {
+class Application_Form_forgetpassword extends Zend_Form {
 
     public function init() {
 
@@ -11,6 +11,11 @@ class Application_Form_Login extends Zend_Form {
 
         $email = new Zend_Form_Element_Text("email");
         $email->setRequired()
+                ->addValidator(new Zend_Validate_Db_RecordExists(array(
+        'table' => 'user',
+        'field' => 'email'
+    )))
+
                 ->setLabel("Email:");
 $email->setDecorators(array(
 
@@ -26,36 +31,14 @@ $email->setDecorators(array(
 
                    array('Label', array('tag' => 'td')),
 
-                   array(array('row'=>'HtmlTag'),array('tag'=>'tr'))
+                   array(array('row'=>'HtmlTag'),array('tag'=>'tr')),
 
-  
-
+               
            ));
 
 
 
-        $password = new Zend_Form_Element_Password("password");
-        $password->setRequired()
-                ->setLabel("Password");
-$password->setDecorators(array(
-
-  
-
-                   'ViewHelper',
-
-                   'Description',
-
-                   'Errors',
-
-                   array(array('data'=>'HtmlTag'), array('tag' => 'td')),
-
-                   array('Label', array('tag' => 'td')),
-
-                   array(array('row'=>'HtmlTag'),array('tag'=>'tr'))
-
-  
-
-           ));
+       
 
 
 
@@ -79,7 +62,7 @@ $password->setDecorators(array(
   
 
        ));
-        $this->addElements(array($email, $password, $submit));
+        $this->addElements(array($email, $submit));
      $this->setDecorators(array(
 
   

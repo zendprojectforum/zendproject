@@ -5,7 +5,19 @@ class Application_Model_User extends Zend_Db_Table_Abstract
 
     protected $_name = "user";  //table name in database
 
-    
+    function getuserbyemail($email){
+        
+       
+        $select = $this->select();
+        $select->from('user');
+        $select->where('email = ?', $email);
+        $stmt = $select->query();
+        $result = $stmt->fetchAll();
+        return $result;
+        
+        
+        
+     }
     
     
      

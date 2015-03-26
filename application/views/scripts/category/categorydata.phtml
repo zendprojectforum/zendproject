@@ -1,13 +1,23 @@
+<?php echo $this->partial('user/header.phtml' );?>
 
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
-</div>
+
+
+
 
 <?php
 //$this->form->setAction($this->url());
 
 //var_dump($this->categories);
+
+if (!$this->myInfo)
+{
+    $isadmin = NULL;
+}
+else{
+    $isadmin = $this->myInfo->isAdmin;
+}
+
+
 
 ?>
            
@@ -85,7 +95,7 @@ function editwithajax(url,id,name){
 </script>
 
 
-<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+<table class="DataTable tablesorter table table-striped" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
     <thead>
         <tr>
             
@@ -95,9 +105,10 @@ function editwithajax(url,id,name){
     <tbody>
     <?php $i=0;
    
-     if($this->myInfo->isAdmin && !$this->lock){
+     if($isadmin && !$this->lock){
          
-        echo "<a href=".'http://localhost/zend_project/public/Forum/addforum?cat_id='.$this->categoryID.">add forum</a>";
+      echo "<label style='margin-left: 1113px;font-size: 24px;'><a href=".'http://localhost/zend_project/public/Forum/addforum?cat_id='.$this->categoryID.">+add forum</a></label>";
+      
      }
         
         
@@ -107,12 +118,12 @@ function editwithajax(url,id,name){
         <tr <?php echo "id='row".$forum['forumId']."'";?>>
          <td <?php echo "id='forumName".$forum['forumId']."'";?>>
         <?php
-          echo "<a"."  id='link.".$forum['forumId']."' href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.$forum['forumId'].">".$forum['forumName']."</a>" ;
+         echo "<a"."  id='link.".$forum['forumId']."' href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.$forum['forumId'].">".$forum['forumName']."</a>" ;
        
         ?>    
         </td>        
           <?php
-           if($this->myInfo->isAdmin){
+           if($isadmin){
 echo "<td>"."<input value='delete' type='button'  id='".$forum['forumId']."' onclick =ajax('Forum/deleteforum?forumId=".$forum['forumId']."') >";  
 echo "</td>";        
 
@@ -126,7 +137,7 @@ echo "</td>";
 ?>
         
         <td>
-        <?php
+       <?php
 echo "<td>"."<input value='edit' type='button'  id='".$forum['forumId']."' onclick =editwithajax('Forum/editforum?forumId=".$forum['forumId']."',".$forum['forumId'].",'".$forum['forumName']."')>" ;  
 echo "</td>";  
            }

@@ -61,7 +61,6 @@ function deleteUser(elm){
  
     var parentRow = elm.parentNode.parentNode;
     var id = parentRow.id;
-       alert ("hereee");
 
    
     //ajax request
@@ -77,7 +76,6 @@ function deleteUser(elm){
 }
 
 function Edit(elm){
-    alert ("here") ;
     
     var loc = window.location.href;
     var n = loc.lastIndexOf('/');

@@ -1,5 +1,4 @@
-function system(elem) {
-    alert("ya raaab");
+function system(elem, username) {
     var id = elem.id;
     var status;
 
@@ -15,13 +14,15 @@ function system(elem) {
     
     ajaxRequest.open("GET", "/zend_project/public/system/changestatus?id=" + id + "&status=" + status);
     ajaxRequest.onreadystatechange = function () {
-        alert(ajaxRequest.responseText);
         if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
             if (status == 0) {
                 elem.innerHTML = "Open System";
+                $('#admin')[0].innerHTML = username
             }
             else {
                 elem.innerHTML = "Close System";
+                $('#admin')[0].innerHTML = username
+
             }
 
         }
@@ -37,5 +38,5 @@ function getXMLHttpRequest() {
     else {
         var request = new ActiveXObject("Microsoft.XMLHTTP");
     }
-    return 	request;
+    return request;
 }

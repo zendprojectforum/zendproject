@@ -1,12 +1,50 @@
+<?php echo $this->partial('user/header.phtml' );
 
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
-</div>
+
+//$this->form->setAction($this->url());
+if (!$this->myInfo)
+{
+    $isadmin = NULL;
+    $id =NULL;
+
+}
+else{
+    $isadmin = $this->myInfo->isAdmin;
+    $id = $this->myInfo->id;
+
+}
+?>
+<style>
+starimg{
+        width:15% !important;
+        height:15% !important;
+    }
+</style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script>
     
-    function deleteThread(id) {
+ ajaxRequestLock = new XMLHttpRequest();
+function ajaxlock(url,id){
+          
+           ajaxRequestLock.open("GET","http://localhost/zend_project/public/" + url, true);
+           ajaxRequestLock.send();
+        
+        ajaxRequestLock.onreadystatechange = function(){    
+                     
+        if(ajaxRequestLock.readyState ===4 && ajaxRequestLock.status===200){
+          
+            response=(ajaxRequestLock.responseText);
+            
+            $lockbtn=document.getElementById('lbtn'+id); 
+            if(response){response="unlock";}
+            else{response="lock"}
+           $lockbtn.setAttribute("value",response);
+            
+        }
+        };
+    }
+        
+  function deleteThread(id) {
 
    var thrId = id; // this gets the parent classes.
     
@@ -46,32 +84,44 @@
 //$this->form->setAction($this->url());
 ?>
 
-<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+<table class="DataTable tablesorter table table-striped" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
     
     <tbody>
             <?php $i=0;
             $threads=$this->posts;
             $forumId=$_GET['forumId'];
-            if (!$this->lock){
-            echo "<a href=".'http://localhost/zend_project/public/Thread/addthread?forumId='.$forumId.">add thread</a>";
-            }   
+            if (!$this->lock && $id){
+              echo "<label style='margin-left: 1113px;font-size: 24px;'><a href=".'http://localhost/zend_project/public/Thread/addthread?forumId='.$forumId.">+add thread</a></label>"; }   
             foreach ($threads  as $thread) { ?>
         <tr <?php echo "id=row".$thread['threadId'];?>>
            <td>
              
              <?php 
-            
+            if($thread['isSticky']){?>
+                  
+                 <img  style='width:30px; height:30px;' src="<?php echo $this->baseUrl();?>/media/images/stars.png"></img>
+            <?php }
             echo "<a href='http://localhost/zend_project/public/Thread/showthread?id=".$thread['threadId']."'>". $thread['threadTitle']."</a>" ;  
-            if($this->myInfo->isAdmin||$this->myInfo->id==$thread['userId']){
-            echo "<button  id='" . $thread["threadId"] . "' onclick="."deleteThread(".$thread['threadId'].")".">Delete</button>";
+            if($isadmin|| $id==$thread['user_id']){
+            echo "<td><button  id='" . $thread["threadId"] . "' onclick="."deleteThread(".$thread['threadId'].")".">Delete</button></td>";
             
                 
             }
-             if($this->myInfo->isAdmin){
-             if($thread['isSticky']){
-                 echo "stick";
-                 $sticky="unsticky";}else{$sticky='markassticky';}     
-             echo "<td>"."<a href='http://localhost/zend_project/public/Thread/markstickythread?threadId=".$thread['threadId']."&forumId=".$forumId."'>".$sticky. $thread['threadTitle']."</a>"."</td>" ;  
+if($id){
+            echo "<td>"."<input value='";
+if($thread['isLocked']){echo 'unlock';}else{echo 'lock';} 
+echo "' type='button'  id='lbtn".$thread['threadId']."' onclick = \" ajaxlock('Thread/lockthread?threadId=".$thread['threadId']."&threadLock=".$thread['isLocked']."' ,".$thread['threadId'].")\" >";  
+echo "</td>"; 
+}
+            if($isadmin){
+                echo '<td>';
+             if($thread['isSticky']){?>
+                  
+             
+                   
+            <?php
+                 $sticky="Unmark sticky";}else{$sticky='Mark as sticky';}     
+             echo "<a href='http://localhost/zend_project/public/Thread/markstickythread?threadId=".$thread['threadId']."&forumId=".$forumId."'>".$sticky."</a>"."</td>" ;  
                 
              }?>  
             </td>        

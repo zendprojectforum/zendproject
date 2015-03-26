@@ -1,28 +1,27 @@
+<?php echo $this->partial('user/header.phtml'); ?>
 
 <script src="http://localhost/zend_project/public/media/js/system/showsystem.js" ></script>
 
 
 <br /><br />
-<div id="view-content">
-    <table><tr>
-            <th>Status</th>
+<div class="col-md-6" class="jumbotron">
+    <table  class="table table-striped"><tr>
+            <th>   Action</th>
             <th>Last change by</th>
         </tr><tr>
-            
-            
-<?php
- 
-if ($this->status == 0){
-    echo "<td><button id='".$this->myInfo->id."' onclick='system(this)'>Open System</button></td>";   
-}else{
-    echo "<td><button id='".$this->myInfo->id."'  onclick='system(this)'>Close System</button></td>";   
-}
+
+    
+            <?php if ($this->status == 0) { ?>
+                <td><button id='<?php echo $this->myInfo->id; ?>'  class="btn btn-lg btn-default"  onclick='system(this, "<?php echo $this->myInfo->username; ?>")'>Open System</button></td>
+            <?php } else { ?>
+              <td><button id='<?php echo $this->myInfo->id; ?>'  class="btn btn-lg btn-default"  onclick='system(this , "<?php echo  $this->myInfo->username; ?>")' >Close System</button></td>   
 
 
-echo "<td>".$this->adminname."</td>"; 
- 
- 
- 
-?>
+            <?php
+            }
+
+
+            echo "<td id='admin'>" . $this->adminname . "</td>";
+            ?>
         </tr></table>
 </div>

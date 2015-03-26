@@ -1,15 +1,48 @@
-
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>category</b> and script/action name <b>get Category</b></p>
-</div>
-
+<?php echo $this->partial('user/header.phtml' );?>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<style>
+    input{
+        width:90% !important;
+    }
+    td{
+        padding-bottom: 20px;
+    }
+    h1{
+        margin-bottom: 50px;
+        
+    }
+    #submit{
+        margin-top: 50px;
+        height:56px;
+        font-size:30px;
+    }
+    .jumbotron{
+        width: 50%;
+        margin-left: 342px;
+        border-radius: 210px;
+    }
+    .jumbotron h1{
+        font-size: 48px;
+    }
+    
+</style>
+<div class="jumbotron" align="center">
+    <h1> Add New Category </h1>
 <?php
-if($this->myInfo->isAdmin){
-echo $this->form;
+
+
+if (!$this->myInfo)
+{
+    $isadmin = NULL;
+}
+else{
+    $isadmin = $this->myInfo->isAdmin;
+}
+if($isadmin){
+    
+    echo $this->form;
 }
 ?>
 
-
-
+</div>
 

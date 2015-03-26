@@ -1,3 +1,4 @@
+<?php echo $this->partial('user/header.phtml' );?>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
 <style>
@@ -6,7 +7,20 @@
         height:140px;
     }
     input{
-        width:30% !important;
+        width:60% !important;
+    }
+    .pp{
+       margin-left: 782px;
+        margin-top: -450px;
+        width: 20%;
+        height: 30%;
+    }
+    td{
+        padding: 9px;
+    }
+    .s{
+        margin-left: 782px;
+        margin-top: -151px;
     }
 </style>
 
@@ -26,9 +40,14 @@
         <?php
           
         echo $this->form;
+        if($this->image){
         $img = '/zend_project/public/media/images/' . $this->image;
-        echo "<img class='img-rounded' src ='$img' ";
+        echo "<img class='img-rounded pp' src ='$img' >";
+        }
       
+        
+        $profpic = '/zend_project/public/media/profile/' . $this->profpic;
+        echo "<img class='img-rounded s' src ='$profpic' >";
         ?>
     </div>
 </div >

@@ -5,8 +5,37 @@ class ForumController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        $action = $this->getRequest()->getActionName();
+        $authorization = Zend_Auth::getInstance();
+        if ($authorization->hasIdentity()) {
+            
+            
+            //1-check system
+            $info = $authorization->getIdentity();
+            if (!$this->checkSystemStatus() && !$info->isAdmin) {
+                
+                    $this->redirect("user/systemclosed");
+            } 
+            
+            }else{ //not logged in
+               
+                //1-check system status
+                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                    $this->redirect("user/systemclosed");
+            }
+        }
     }
+    
+    private function checkSystemStatus() {
+
+        $sys_mdl = new Application_Model_System();
+        $system = $sys_mdl->getStatus()[0];
+        return $system['status'];
+    }
+    
+    
+    
+    
 
     public function indexAction()
     {

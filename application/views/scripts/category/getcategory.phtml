@@ -1,13 +1,22 @@
+<?php echo $this->partial('user/header.phtml' );?>
 
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>category</b> and script/action name <b>getCategory</b></p>
-</div>
+
+<script src="http://localhost/zend_project/public/media/js/user/listusers.js" ></script>
+
+
 
 <?php
 //$this->form->setAction($this->url());
 
 //var_dump($this->categories);
+
+if (!$this->myInfo)
+{
+    $isadmin = NULL;
+}
+else{
+    $isadmin = $this->myInfo->isAdmin;
+}
 
 ?>
            
@@ -22,8 +31,22 @@ function ajax(url){
                      
         if(ajaxRequest.readyState ===4 && ajaxRequest.status===200){
             response=(ajaxRequest.responseText);
-            alert(response);
+             var forums = document.getElementsByClassName('row'+response);
+             
+             
+             
+           
+            for (i = 0; i < (forums.length); i++) {
+             forums[i].remove();
+             
+             }
+             forums = document.getElementsByClassName('row'+response)[0];
+             if(forums){
+              forums.remove();}
+ 
+             
             document.getElementById('row'+response).parentNode.removeChild(document.getElementById('row'+response));
+            
          }
         };
 
@@ -42,32 +65,34 @@ function ajaxlock(url,id){
             else{response="lock"}
             $lockbtn.setAttribute("value",response);
             
+            $lockbtn.firstChild.data=response;
         }
         };
     }
 </script>
 
 
-<table class="DataTable tablesorter" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
+<table  class="table table-hover" width="100%" valign="top" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">  
     <thead>
         <tr>
             
-                <?php foreach ( $this->categories[0] as $key =>$value) { ?> 
-                    <th><?php echo ($key); ?></th> 
-                <?php }?> 
+                
+                    <th><?php echo ("Category Name"); ?></th> 
+             
         </tr>
     </thead>
     <tbody>
     <?php $i=0;
-        if($this->myInfo->isAdmin ){
-         echo "<a href=".'http://localhost/zend_project/public/Category/addcategory'.">add category</a>";
+        if($isadmin){
+         echo "<label style='margin-left: 1113px;font-size: 24px;'><a href=".'http://localhost/zend_project/public/Category/addcategory'.">+add category</a></label>";
+         
         }
          foreach ( $this->categories as $category) { ?>
-        <tr <?php echo "id='row".$category['catId']."'";?>> 
+        <tr  <?php echo "id='row".$category['catId']."'";?>> 
             
         
-        <td <?php echo "id='catName".$category['catId']."'";?>>
-          <?php echo "<a href=".'http://localhost/zend_project/public/Category/categorydata?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".$category['catName']."</a>" ;
+        <td class="danger" <?php echo "id='catName".$category['catId']."'";?>>
+          <?php echo "<a  style='font-size:30px'; href=".'http://localhost/zend_project/public/Category/categorydata?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".$category['catName']."</a>" ;
         ?>
         
         </td>
@@ -76,22 +101,25 @@ function ajaxlock(url,id){
         <td>
         <?php
    
-       if($this->myInfo->isAdmin){
-echo "<td>"."<input value='delete' type='button'  id='".$category['catId']."' onclick =ajax('Category/deletecategory?catId=".$category['catId']."') >";  
+       if($isadmin){
+echo "<td>"."<button class='btn btn-lg btn-danger' value='delete' id='".$category['catId']."' onclick =ajax('Category/deletecategory?catId=".$category['catId']."')>"."delete"."</button>";  
 echo "</td>"; 
 ?>    
         </td> 
         <td>
         <?php
-          echo "<a  href=".'http://localhost/zend_project/public/Category/editcategory?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".'<button>'.'edit'.$category['catName'].'</button>'."</a>" ;
+          echo "<a href=".'http://localhost/zend_project/public/Category/editcategory?categoryId='.$category['catId']."&categoryName='".$category['catName']."'>".'<button class="btn btn-lg btn-default">'.'edit   '.'</button>'."</a>" ;
        
         ?>
         
             <?php
-echo "<td>"."<input value='";
+echo "<td>"."<button class='btn btn-lg btn-success' ";
+echo " id='lbtn".$category['catId']."' value=\"";
+if($category['catIsLocked']){echo 'unlock';}else{echo 'lock';};
+echo "\" onclick = \" ajaxlock('Category/lockcategory?catId=".$category['catId']."&forumLock=".$category['catIsLocked']."' ,".$category['catId'].")\" >";  
+
 if($category['catIsLocked']){echo 'unlock';}else{echo 'lock';} 
-echo "' type='button'  id='lbtn".$category['catId']."' onclick = \" ajaxlock('Category/lockcategory?catId=".$category['catId']."&forumLock=".$category['catIsLocked']."' ,".$category['catId'].")\" >";  
-echo "</td>";        
+echo "</button></td>";        
        }
 ?>
         
@@ -105,7 +133,7 @@ echo "</td>";
         //foreach ($forums  as $forum) { 
          
         ?>
-        <tr <?php echo "id='row".$forums[$in]['forumId']."'";?>>
+        <tr <?php echo "id='row".$forums[$in]['forumId']."' class='row".$category['catId']."'";?>>
          <td>
         <?php
         
@@ -114,7 +142,7 @@ echo "<a href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.
         ?>    
         </td>        
           <?php
-//echo "<td>"."<input value='delete' type='button'  id='".$forum['forumId']."' onclick =ajax('Forum/deleteforum?forumId=".$forum['forumId']."') >";  
+//echo "<td>"."<button class='btn btn-lg btn-danger'><input  value='delete' type='button'  id='".$forum['forumId']."' onclick =ajax('Forum/deleteforum?forumId=".$forum['forumId']."') ></button>";  
 //echo "</td>";        
 ?>
         
@@ -125,4 +153,3 @@ echo "<a href=".'http://localhost/zend_project/public/Forum/forumdata?forumId='.
        <?php $i=$i+1; }?>                            
     </tbody>
 </table>
-

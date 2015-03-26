@@ -6,8 +6,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         try {
             $config = array(
                 'auth' => 'login',
-                'username' => 'mertloka@gmail.com',
-                'password' => '',
+                'username' => 'yoyo80884@gmail.com',
+                'password' => 'yosrayosra',
                 'ssl' => 'tls',
                 'port' => 587
             );
@@ -37,6 +37,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
    
 
-    var $myinfo;
+    var $myinfo= NULL;
 
 }

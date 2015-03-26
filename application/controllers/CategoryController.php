@@ -5,9 +5,37 @@ class CategoryController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        $action = $this->getRequest()->getActionName();
+        $authorization = Zend_Auth::getInstance();
+        if ($authorization->hasIdentity()) {
+            
+            
+            //1-check system
+            $info = $authorization->getIdentity();
+            if (!$this->checkSystemStatus() && !$info->isAdmin) {
+                
+                    $this->redirect("user/systemclosed");
+            } 
+            
+            }else{ //not logged in
+               
+                //1-check system status
+                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                    $this->redirect("user/systemclosed");
+            }
+        }
     }
 
+    
+    private function checkSystemStatus() {
+
+        $sys_mdl = new Application_Model_System();
+        $system = $sys_mdl->getStatus()[0];
+        return $system['status'];
+    }
+    
+    
+    
     public function indexAction()
     {
         // action body
@@ -52,6 +80,7 @@ class CategoryController extends Zend_Controller_Action
         $this->view->lock=$category_model->listspecificcategory($categoryID)[0]["catIsLocked"]; 
     }
     function addcategoryAction(){
+        
         $front = Zend_Controller_Front::getInstance();
         $bootstrap = $front->getParam("bootstrap");
         
@@ -84,6 +113,8 @@ class CategoryController extends Zend_Controller_Action
         $this->view->form=$form;
   
      }
+     
+     
      public function lockcategoryAction() {
        $categoryId=$this->_request->getParam('catId');
        $category_model = new Application_Model_Category();
@@ -109,14 +140,29 @@ class CategoryController extends Zend_Controller_Action
      
      
 function editcategoryAction(){
+    
+    
+    
+        $action = $this->getRequest()->getActionName();
+        $authorization = Zend_Auth::getInstance();
+        if ($authorization->hasIdentity()) {
+            //1-check system
+            $info = $authorization->getIdentity();
+            if (!$info->isAdmin){
+                $this->redirect("user/systemclosed");
+            }
+        }
+        
+        
+        $categoryId=$this->_request->getParam('categoryId');
+        $categoryName=$this->_request->getParam('catName');
          $form  = new Application_Form_addcategory();
         $validator = new Zend_Validate_Db_NoRecordExists( array('table' => 'category','field' => 'catName'));
         if ($validator->isValid($this->_request->getParam('catName'))) {
             // email address appears to be valid
         
         if($this->getRequest()->isPost()){
-        $categoryId=$this->_request->getParam('categoryId');
-        $categoryName=$this->_request->getParam('catName');
+        
        
         $category_model = new Application_Model_Category();
         echo $categoryId; 
@@ -132,8 +178,10 @@ function editcategoryAction(){
                 echo "$message\n";
             }
         } 
-       
+        $data['catName']= $categoryName;
+        $form->populate($data);
         $this->view->form=$form;
+        $this->view->admin = $info->isAdmin;
      
 }
 }

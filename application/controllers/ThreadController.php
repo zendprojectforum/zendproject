@@ -4,10 +4,41 @@ class ThreadController extends Zend_Controller_Action
 {
 
     public function init()
-    {
-         
+    {       
+
+        $action = $this->getRequest()->getActionName();
+        $authorization = Zend_Auth::getInstance();
+        if ($authorization->hasIdentity()) {
+            
+            
+            //1-check system
+            $info = $authorization->getIdentity();
+            if (!$this->checkSystemStatus() && !$info->isAdmin) {
+                
+                    $this->redirect("user/systemclosed");
+            } 
+            
+            }else{ //not logged in
+               
+                //1-check system status
+                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                    $this->redirect("user/systemclosed");
+            }
+        }
+
         /* Initialize action controller here */
     }
+    
+    
+    private function checkSystemStatus() {
+
+        $sys_mdl = new Application_Model_System();
+        $system = $sys_mdl->getStatus()[0];
+        return $system['status'];
+    }
+    
+    
+    
     
     protected function javascriptHelper($caller){
     $request = Zend_Controller_Front::getInstance()->getRequest();
@@ -43,8 +74,33 @@ public function markstickythreadAction(){
 
    }
     
+   
+   public function lockthreadAction() {
+      
+       $threadId=$this->_request->getParam('threadId');
+       $thread_model = new Application_Model_Thread();
+       
+       $isLocked= $thread_model-> getThreadById($threadId);
+      
+       $isLocked=$isLocked[0]["isLocked"];
+       
+       $thread_model = new Application_Model_Thread();
+      // $thread_model->lockthread($threadId,!($isLocked));
+       
+       $thread_model->updateThread(array('isLocked'=>!($isLocked)),'threadId='.$threadId);
+       echo (!$isLocked);
+       exit;
+        
+    }
+   
+   
 public function addthreadAction(){
-
+            $action = $this->getRequest()->getActionName();
+            $authorization =Zend_Auth::getInstance();
+             
+             $info =     $authorization->getIdentity ();
+             
+                   
             $form = new Application_Form_addthread();
 
     
@@ -55,7 +111,7 @@ public function addthreadAction(){
                $thread_info = $form->getValues();
                $forumId=$this->_request->getParam('forumId');
                $thread_info["forumId"]=$forumId;
-              
+               $thread_info["user_id"]=$info->id;
                $thread_model = new Application_Model_Thread();
                $thread_model->addthread($thread_info);
                $this->redirect('/Forum/forumdata?forumId='.$forumId);        
@@ -107,12 +163,12 @@ public function addthreadAction(){
               
                 
                 $thuser =  $users->getUserById($result[0]['user_id'])[0];
-                $threadUser = array ($thuser['id'] , $thuser['username'] , $thuser['signature']);
+                $threadUser = array ($thuser['id'] , $thuser['username'] , $thuser['signature'],$thuser['profpic'] );
                 
                 $replyUsers = array();
                 foreach ($reps as $reply){
                     $user = $users->getUserById($reply['user_id'])[0];
-                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan']);
+                    $replyUsers[] = array ($user['id'] , $user['username'] , $user['signature'], $user['isAdmin'] , $user['isBan'], $user['profpic']);
                  }
 
 
@@ -134,6 +190,7 @@ public function addthreadAction(){
             }
        }
     }
+
 
     //called by AJAX
     public function updatethreadAction(){
