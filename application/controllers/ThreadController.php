@@ -6,7 +6,7 @@ class ThreadController extends Zend_Controller_Action
     public function init()
     {       
 
-        $action = $this->getRequest()->getActionName();
+           $action = $this->getRequest()->getActionName();
         $authorization = Zend_Auth::getInstance();
         if ($authorization->hasIdentity()) {
             
@@ -21,12 +21,13 @@ class ThreadController extends Zend_Controller_Action
             }else{ //not logged in
                
                 //1-check system status
-                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                if (!$this->checkSystemStatus() ) {
                     $this->redirect("user/systemclosed");
             }
         }
+        
 
-        /* Initialize action controller here */
+       
     }
     
     

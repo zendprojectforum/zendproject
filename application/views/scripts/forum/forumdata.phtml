@@ -107,7 +107,7 @@ function ajaxlock(url,id){
             
                 
             }
-if($id){
+if($isadmin){
             echo "<td>"."<input value='";
 if($thread['isLocked']){echo 'unlock';}else{echo 'lock';} 
 echo "' type='button'  id='lbtn".$thread['threadId']."' onclick = \" ajaxlock('Thread/lockthread?threadId=".$thread['threadId']."&threadLock=".$thread['isLocked']."' ,".$thread['threadId'].")\" >";  

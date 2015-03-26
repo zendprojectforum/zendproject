@@ -131,6 +131,6 @@ echo "</div></div>";
 
 if (!$this->thread['isLocked'] && ($isadmin || !$isban ) ) {
     echo "<textarea class='replyText' cols='155' rows='10' placeholder='Add reply...'   style='margin-left:100px;' ></textarea>";
-    echo "<br/><button class='btn btn-lg btn-default' style='margin-left:100px;' onclick=\"reply(" . $this->id . " ,'$username','$image','$profpic' )\" type='submit' ' >Reply</button>";
+    echo "<button class='btn btn-lg btn-default' style='margin-left:100px;' onclick=\"reply(" . $this->id . " ,'$username','$image','$profpic' )\" type='submit' ' >Reply</button>";
 }
 ?>

@@ -20,7 +20,7 @@ class CategoryController extends Zend_Controller_Action
             }else{ //not logged in
                
                 //1-check system status
-                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                if (!$this->checkSystemStatus() ) {
                     $this->redirect("user/systemclosed");
             }
         }

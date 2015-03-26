@@ -13,7 +13,7 @@ class UserController extends Zend_Controller_Action {
             
             //1-check system
             $info = $authorization->getIdentity();
-            if (!$this->checkSystemStatus() && !$info->isAdmin) {
+            if (!$this->checkSystemStatus() && !$info->isAdmin && $action!='systemclosed' && $action!='logout') {
                 
                     $this->redirect("user/systemclosed");
             } 
@@ -31,7 +31,7 @@ class UserController extends Zend_Controller_Action {
             }else{ //not logged in
                
                 //1-check system status
-                if (!$this->checkSystemStatus() && !$action == "login" ) {
+                if (!$this->checkSystemStatus() && $action!='systemclosed' && $action!='login' ) {
                     $this->redirect("user/systemclosed");
                     
                 //2-no list users (admin only)
